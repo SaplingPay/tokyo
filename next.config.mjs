@@ -8,4 +8,8 @@ const withSerwist = withSerwistInit({
   disable: false,
 });
 
-export default withSerwist({});
+export default withSerwist({
+  env: {
+    MAP_TOKEN: process.env.MAP_TOKEN,
+  },
+});

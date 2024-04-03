@@ -2,9 +2,6 @@ import React from 'react'
 import Map, { Marker } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-
-const token = 'pk.eyJ1IjoiY2hyaXMtc2FwbGluZyIsImEiOiJjbHVpMmliY3YwMDFrMmtwMnRzMHFzZmxuIn0.6e-MObmJZpJ_HQg9IG7-OA'
-
 type Props = {
     markerClick?: () => void
 }
@@ -12,7 +9,7 @@ type Props = {
 const Page = (props: Props) => {
     return (
         <Map
-            mapboxAccessToken={token}
+            mapboxAccessToken={process.env.MAP_TOKEN}
             initialViewState={{
                 longitude: 4.916990558831426,
                 latitude: 52.349281395406265,
