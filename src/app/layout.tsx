@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Epilogue } from "next/font/google";
 import "./globals.css";
+import { AntdRegistry } from '@ant-design/nextjs-registry';
 
 const font = Epilogue({ subsets: ["latin"] });
 
@@ -56,7 +57,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={font.className}>{children}</body>
+      <body className={font.className}>
+        <AntdRegistry>
+          {children}</AntdRegistry>
+      </body>
     </html>
   );
 }

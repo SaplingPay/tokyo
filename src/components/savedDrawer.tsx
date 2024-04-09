@@ -1,11 +1,12 @@
 'use client'
 import React, { useState } from 'react'
-import { Avatar, Button, Drawer, FloatButton } from 'antd';
+import { Avatar, Button, Drawer, FloatButton, Input } from 'antd';
 import { DrawerStyles } from 'antd/es/drawer/DrawerPanel';
 import Title from 'antd/es/typography/Title';
-import { ChevronDown, CrosshairIcon, XIcon } from 'lucide-react';
+import { ChevronDown, CrosshairIcon, SearchIcon, XIcon } from 'lucide-react';
 import { Inter, Epilogue } from "next/font/google";
 const font = Epilogue({ subsets: ["latin"] });
+import { SearchOutlined } from '@ant-design/icons';
 
 type Props = {
     setOpen: (open: boolean) => void
@@ -25,7 +26,7 @@ const drawerStyles: DrawerStyles = {
     },
     content: {
         borderRadius: "3rem 3rem 0 0",
-        // padding: "1rem 1rem 0 2rem",
+        padding: "0",
         boxShadow: "none",
         // textAlign: "center"
     },
@@ -35,9 +36,7 @@ const drawerStyles: DrawerStyles = {
 
 };
 
-const HomeDrawer = (props: Props) => {
-
-    const [height, setHeight] = useState('8vh')
+const SavedDrawer = (props: Props) => {
 
     return (
         <Drawer
@@ -47,24 +46,31 @@ const HomeDrawer = (props: Props) => {
             title={null}
             maskClosable={false}
             styles={drawerStyles}
-            height={height}
+            height="45vh"
             className={font.className}
-        // onClick={() => height === '8vh' ? setHeight('45vh') : setHeight('8vh')}
         >
+
             <div className='flex'>
                 <button className='ml-auto mr-7 mt-4 bg-slate-100 rounded-full p-1 text-black' onClick={() => props.setOpen(false)}>
                     <XIcon className='h-5 w-5' />
                 </button>
-            </div >
-            <div className='-mt-6 mb-5 mx-6'>
-                <span className='font-bold text-base'>Recommended Restaurants For You</span>
             </div>
-
-            <div className='mt-6 mx-4'>
+            <div className='flex w-max mx-auto -mt-6 mb-2 pt-2'>
+                <button className='flex-col mr-5 -ml-5 text-center w-30'>
+                    <p className='font-bold text-xl'>Restaurants</p>
+                    <p className='text-xs'>325 restaurants</p>
+                </button>
+                <button className='flex-col text-center w-30'>
+                    <p className='font-bold text-xl'>Dishes</p>
+                    <p className='text-xs'>326 Dishes</p>
+                </button>
+            </div>
+            {/* <Input placeholder="Search for a restaurant" prefix={<SearchOutlined />} /> */}
+            <div className='mt-6 px-4'>
                 {Array(10).fill(0).map((_, i) => {
                     return (
                         <div className='flex mb-4'>
-                            <Avatar size={64} src="https://bloximages.newyork1.vip.townnews.com/toronto.com/content/tncms/assets/v3/editorial/6/5d/65d20fbb-9006-50b3-8ab9-8157f27f85c6/63dc14cec1ba1.image.jpg?resize=720%2C480" />
+                            <Avatar size={64} src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
                             <div className='flex-col ml-5 h-max my-auto'>
                                 <p className='font-bold text-base'>Restaurant Name</p>
                                 <p className='text-xs'>Address</p>
@@ -74,10 +80,12 @@ const HomeDrawer = (props: Props) => {
                             </div>
                         </div>
                     )
+
                 })}
+
             </div>
-        </Drawer >
+        </Drawer>
     )
 }
 
-export default HomeDrawer
+export default SavedDrawer
