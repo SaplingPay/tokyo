@@ -69,7 +69,7 @@ const SavedDrawer = (props: Props) => {
             <div className='mt-6 px-4'>
                 {Array(10).fill(0).map((_, i) => {
                     return (
-                        <div className='flex mb-4'>
+                        <div className='flex mb-4' key={i}>
                             <Avatar size={64} src="https://bloximages.newyork1.vip.townnews.com/toronto.com/content/tncms/assets/v3/editorial/6/5d/65d20fbb-9006-50b3-8ab9-8157f27f85c6/63dc14cec1ba1.image.jpg?resize=720%2C480" />
                             <div className='flex-col ml-5 h-max my-auto'>
                                 <p className='font-bold text-base'>Restaurant Name</p>
