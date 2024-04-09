@@ -59,7 +59,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={font.className}>
         <AntdRegistry>
-          {children}</AntdRegistry>
+          {children}
+        </AntdRegistry>
       </body>
     </html>
   );
