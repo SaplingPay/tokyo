@@ -15,7 +15,7 @@ const Page = (props: Props) => {
                 latitude: 52.349281395406265,
                 zoom: 12
             }}
-            style={{ width: '100vw', height: '110vh', }}
+            style={{ width: '100vw', height: '100vh', overflow: "hidden" }}
             mapStyle="mapbox://styles/mapbox/streets-v9"
         >
             <Marker longitude={4.916990558831426} latitude={52.349281395406265} anchor="bottom" onClick={props.markerClick}>
