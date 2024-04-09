@@ -43,7 +43,7 @@ const RestaurantViewDrawer = (props: Props) => {
             <div className='px-2 py-4'>
                 {Array(10).fill(0).map((_, i) => {
                     return (
-                        <div className='flex mb-6'>
+                        <div className='flex mb-6' key={i}>
                             <p className='text-lg'>White Chocolate Cookie</p>
                             <div className='ml-auto'>
                                 <span className='p-1.5 border-solid border-black border-2 rounded-full mr-2'>$3.00</span>
