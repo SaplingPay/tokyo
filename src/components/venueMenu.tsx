@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import filledHeart from './assets/filledheart.png';
 import heart from './assets/heart.png';
 import Image from 'next/image';
+import { savedStore } from '@/app/store/state';
 
 type Props = {
     menu: any
@@ -11,7 +12,9 @@ type Props = {
 function VenueMenu(props: Props) {
 
     const [categories, setCategories] = useState<any>([])
-    const [saves, setSaves] = useState<{[key: string]: boolean}>({});
+    const [saves, setSaves] = useState<{ [key: string]: boolean }>({});
+    // use savedStore
+    const { savedMenuItems, saveMenuItem, removeMenuItem } = savedStore();
 
     useEffect(() => {
         console.log('props.menu', props.menu)
@@ -21,11 +24,17 @@ function VenueMenu(props: Props) {
         console.log('categories', catSet)
         setCategories(Array.from(catSet))
 
-        const saves = {};
+        const saves = {} as { [key: string]: boolean };
         props.menu?.items?.forEach((item: any) => {
-            saves[item.id] = false;  
+            if (savedMenuItems.find((mI: any) => mI.id === item.id)) {
+                saves[item.id] = true;
+            } else {
+                saves[item.id] = false;
+            }
         });
         setSaves(saves);
+
+        console.log('saves', savedMenuItems)
 
         return () => {
 
@@ -36,16 +45,55 @@ function VenueMenu(props: Props) {
         return props.menu?.items?.filter((mI: any) => mI.categories[0] === category)
     }
 
-    const toggleSave = (itemId: string) => {
+    const toggleSave = (item: any) => {
         setSaves(prev => ({
             ...prev,
-            [itemId]: !prev[itemId]
+            [item.id]: !prev[item.id]
         }));
+
+        item.venue_id = props.menu.venue_id;
+
+        if (saves[item.id]) {
+            removeMenuItem(item);
+        } else {
+            saveMenuItem(item);
+        }
     };
 
+    console.log("savedMenuItems", savedMenuItems)
+    const filteredSavedMenuItems = savedMenuItems?.filter((item: any) => item?.venue_id === props.menu?.venue_id);
 
     return (
         <Tabs>
+            {filteredSavedMenuItems && filteredSavedMenuItems.length > 0 && (
+                <Tabs.TabPane key='0' tab='Saved'>
+                    <div className='px-2 py-4 overflow-y-scroll h-80'>
+                        {filteredSavedMenuItems.map((item: any, i: number) => {
+                            return (
+                                <div className='flex mb-6' key={i}>
+                                    <p className='text-base'>{item.name}</p>
+                                    <div className='ml-auto flex items-left h-max'>
+                                        {item.price > 0 && (
+                                            <span className='p-1.5 border-solid border-[#12411B] border-2 h-max rounded-full ml-1'>
+                                                ${item.price.toFixed(2)}
+                                            </span>
+                                        )}
+                                        <button className='border-none bg-transparent' onClick={() => toggleSave(item)}>
+                                            <Image
+                                                src={saves[item.id] ? filledHeart : heart}
+                                                alt="Like Icon"
+                                                width={22}
+                                                height={22}
+                                                style={{ marginLeft: ".5em", minWidth: "22px", minHeight: "22px" }}
+                                            />
+                                        </button>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </Tabs.TabPane>
+            )}
             {categories?.map((cat: any, i: number) => {
                 const id = String(i + 1);
                 return (
@@ -55,22 +103,22 @@ function VenueMenu(props: Props) {
                                 return (
                                     <div className='flex mb-6' key={i}>
                                         <p className='text-base'>{item.name}</p>
-                                        <div className='ml-auto flex items-left'>
-                                               {item.price > 0 && ( 
-                                                <span className='p-1.5 border-solid border-[#12411B] border-2 rounded-full ml-1'>
+                                        <div className='ml-auto flex items-left h-max'>
+                                            {item.price > 0 && (
+                                                <span className='p-1.5 border-solid border-[#12411B] border-2 h-max rounded-full ml-1'>
                                                     ${item.price.toFixed(2)}
                                                 </span>
                                             )}
                                             {/* <button className='my-auto h-max align-middle'><HeartIcon className='h-5 w-5' /></button> */}
-                                            <button className='border-none bg-transparent' onClick={() => toggleSave(item.id)}>
-                                        <Image
-                                                src={saves[item.id] ? filledHeart : heart}
-                                                alt="Like Icon"
-                                                width={22} 
-                                                height={22}
-                                                style={{marginLeft:".5em", minWidth:"22px", minHeight:"22px"}}
+                                            <button className='border-none bg-transparent' onClick={() => toggleSave(item)}>
+                                                <Image
+                                                    src={saves[item.id] ? filledHeart : heart}
+                                                    alt="Like Icon"
+                                                    width={22}
+                                                    height={22}
+                                                    style={{ marginLeft: ".5em", minWidth: "22px", minHeight: "22px" }}
                                                 />
-                                        </button>
+                                            </button>
                                         </div>
                                     </div>
                                 )

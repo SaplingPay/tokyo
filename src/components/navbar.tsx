@@ -1,28 +1,17 @@
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { Button } from './ui/button'
-import { userStore } from '@/app/store/state'
+import { navStore } from '@/app/store/state'
 
 type Props = {
-    current: string
-    update: (current: string) => void
-    setOpenModal: (open: boolean) => void
+
 }
 
 const Navbar = (props: Props) => {
-    const [selected, setSelected] = useState(props.current)
-    const user = userStore((state: any) => state.user)
+    const { current, update } = navStore();
 
     const toggle = (item: string) => {
-        if (selected === "For You" && item === "Saved") {
-            if (user) {
-                setSelected("Saved")
-            } else {
-                props.setOpenModal(true)
-            }
-
-        }
-
+        update(item)
     }
 
     return (
@@ -30,7 +19,7 @@ const Navbar = (props: Props) => {
             <div className="flex p-0 rounded-full bg-white">
                 {["For You", "Saved"].map((item, index) => {
                     return (
-                        <button key={index} onClick={() => toggle(item)} className={`py-3 px-12 rounded-full font-semibold ${selected === item ? "text-white" : "text-black"} ${selected === item ? "bg-[#12411B] bg-opacity-90" : "bg-transparent"}`}>{item}</button>
+                        <button key={index} onClick={() => toggle(item)} className={`py-3 px-12 rounded-full font-semibold ${current === item ? "text-white" : "text-black"} ${current === item ? "bg-[#12411B] bg-opacity-90" : "bg-transparent"}`}>{item}</button>
                     )
                 })}
             </div>

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import Map, { Marker } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { GetVenues } from '@/app/actions';
+import { navStore, savedStore } from '@/app/store/state';
 
 type Props = {
     markerClick?: () => void
@@ -11,11 +12,14 @@ type Props = {
 
 const Page = (props: Props) => {
     const [venues, setVenues] = useState<any[]>([])
+    const { current } = navStore();
+    const { savedVenues, allVenues, storeVenues } = savedStore();
 
     useEffect(() => {
         GetVenues().then((res: any) => {
             console.log('res', res)
             setVenues(res)
+            storeVenues(res)
         })
 
         return () => { }
@@ -26,6 +30,21 @@ const Page = (props: Props) => {
         props.setSelectedVenue!(venue)
         props.setOpenVenueDrawer!(true)
     }
+
+    useEffect(() => {
+        console.log('current', current)
+        let res = venues
+        if (current === 'Saved') {
+            res = res.filter((venue: any) => savedVenues.find((sV: any) => sV.id === venue.id))
+        } else {
+            res = allVenues
+        }
+        setVenues(res)
+
+        return () => {
+
+        }
+    }, [current])
 
 
     return (
