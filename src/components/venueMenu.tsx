@@ -75,7 +75,7 @@ function VenueMenu(props: Props) {
                                     <p className='text-base'>{item.name}</p>
                                     <div className='ml-auto flex items-left h-max'>
                                         {item.price > 0 && (
-                                            <span className='p-1.5 border-solid border-[#12411B] border-2 h-max rounded-full ml-1'>
+                                            <span className='p-1.5 border-solid border-[#12411B] bg-[#12411B] text-[#F5FFBE] border-2 h-max rounded-full ml-1'>
                                                 ${item.price.toFixed(2)}
                                             </span>
                                         )}
@@ -107,7 +107,7 @@ function VenueMenu(props: Props) {
                                         <p className='text-base'>{item.name}</p>
                                         <div className='ml-auto flex items-left h-max'>
                                             {item.price > 0 && (
-                                                <span className='p-1.5 border-solid border-[#12411B] bg-[#12411B] text-white border-2 h-max rounded-full ml-2'>
+                                                <span className='p-1.5 border-solid border-[#12411B] bg-[#12411B] text-[#F5FFBE] border-2 h-max rounded-full ml-2'>
                                                     ${item.price.toFixed(2)}
                                                 </span>
                                             )}

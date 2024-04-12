@@ -62,7 +62,10 @@ const Page = (props: Props) => {
                 return (
                     <Marker key={index} longitude={venue.location.latitude} latitude={venue.location.longitude} anchor="bottom" onClick={() => selectVenue(venue)}>
                         <div>
-                            <img src="Map_pin.png" className="w-7 h-8" />
+                            <div className='p-2 min-w-[3.5em] text-center bg-[#12411B] text-[#F5FFBE] rounded-full border-2 border-solid border-white'>
+                                {venue.name.toUpperCase()[0]}
+                            </div>
+                            {/* <img src="Map_pin.png" className="w-7 h-8" /> */}
                         </div>
                     </Marker>
                 )

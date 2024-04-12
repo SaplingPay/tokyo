@@ -27,7 +27,7 @@ const Navbar = (props: Props) => {
             <div className="flex p-0 rounded-full bg-white">
                 {["For You", "Saved"].map((item, index) => {
                     return (
-                        <button key={index} onClick={() => toggle(item)} className={`py-3 px-12 rounded-full font-semibold ${current === item ? "text-white" : "text-black"} ${current === item ? "bg-[#12411B] bg-opacity-90" : "bg-transparent"}`}>{item}</button>
+                        <button key={index} onClick={() => toggle(item)} className={`py-3 px-12 rounded-full font-semibold ${current === item ? "text-[#F5FFBE]" : "text-black"} ${current === item ? "bg-[#12411B] bg-opacity-90" : "bg-transparent"}`}>{item}</button>
                     )
                 })}
             </div>

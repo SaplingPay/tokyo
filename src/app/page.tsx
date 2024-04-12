@@ -5,7 +5,7 @@ import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { use, useEffect, useState } from "react";
 import { ChevronUp, ShareIcon } from 'lucide-react';
-import { navStore, savedStore } from './store/state'
+import { drawerStore, navStore, savedStore } from './store/state'
 
 import SavedDrawer from "@/components/savedDrawer";
 import RestaurantViewDrawer from "@/components/restaurantViewDrawer";
@@ -17,7 +17,7 @@ import RecommendedDrawer from "@/components/recommendedDrawer";
 export default function Home() {
 
   const [openVenueDrawer, setOpenVenueDrawer] = useState(false)
-  const [selectedVenue, setSelectedVenue] = useState<any>(null)
+  const { selectedVenue, setSelectedVenue, setOpenRecommend } = drawerStore();
 
   useEffect(() => {
     savedStore.persist.rehydrate()

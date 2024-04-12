@@ -18,6 +18,10 @@ export const drawerStore = create((set: any) => ({
     setOpenSaved: (open: boolean) => set((state: any) => ({
         openSaved: open
     })),
+    selectedVenue: null,
+    setSelectedVenue: (venue: any) => set((state: any) => ({
+        selectedVenue: venue
+    })),
 }));
 
 export const userStore = create(

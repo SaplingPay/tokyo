@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { Avatar, Button, FloatButton, Input, Tabs } from 'antd';
 import { DrawerStyles } from 'antd/es/drawer/DrawerPanel';
 import Title from 'antd/es/typography/Title';
@@ -11,6 +11,7 @@ import VenueInfo from './venueInfo';
 import VenueMenu from './venueMenu';
 import { GetMenu } from '@/app/actions';
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from './ui/drawer';
+import { drawerStore } from '@/app/store/state';
 
 type Props = {
     setOpen: (open: boolean) => void
@@ -44,6 +45,7 @@ const drawerStyles: DrawerStyles = {
 const RestaurantViewDrawer = (props: Props) => {
 
     const [menu, setMenu] = useState<any>(null)
+    const { selectedVenue, setSelectedVenue, setOpenRecommend, setOpenSaved } = drawerStore();
 
     const openFilters = () => {
         props.setOpen(false)
@@ -59,40 +61,25 @@ const RestaurantViewDrawer = (props: Props) => {
             })
     }, [props.selectedVenue])
 
+    useEffect(() => {
+        setOpenRecommend(false)
+        setOpenSaved(false)
+        props.setOpen(true)
+
+        if (selectedVenue !== null && selectedVenue !== undefined) {
+            const { id, menu_id } = selectedVenue; // Add type checking and destructuring
+            GetMenu(id, menu_id)
+                .then((res: any) => {
+                    console.log('res', res)
+                    setMenu(res)
+                })
+        }
+        return () => {
+        }
+    }, [selectedVenue])
+
 
     return (
-        // <Drawer
-        //     open={props.open}
-        //     placement='bottom'
-        //     mask={false}
-        //     title={null}
-        //     maskClosable={false}
-        //     styles={drawerStyles}
-        //     height="40vh"
-        //     className={font.className}
-        // >
-
-        //     <div className='flex'>
-        //         <button className='ml-auto mr-7 mt-4 bg-slate-100 rounded-full p-1 text-black' onClick={() => props.setOpen(false)}>
-        //             <XIcon className='h-5 w-5' />
-        //         </button>
-        //     </div>
-
-        //     <div className='-mt-6 mb-2 pt-2 px-2'>
-        //         <VenueInfo selectedVenue={props.selectedVenue} />
-        //     </div>
-
-        //     {/* <div className='flex'>
-        //         <button className='ml-auto pr-2 -my-10 h-max' onClick={openFilters}>
-        //             <span className='mx-max text-x py-2 px-4 rounded-full border-solid border-black border-2'>Dietary Filters</span>
-        //         </button>
-        //     </div> */}
-
-        //     {/* <Input placeholder="Search for a restaurant" prefix={<SearchOutlined />} /> */}
-        //     <div className='mt-2 px-4'>
-        //         <VenueMenu menu={menu} />
-        //     </div>
-        // </Drawer>
         <Drawer
             open={props.open}
             modal={false}

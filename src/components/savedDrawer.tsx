@@ -8,7 +8,7 @@ type Props = {
 }
 
 const SavedDrawer = () => {
-    const { openSaved, setOpenSaved } = drawerStore();
+    const { openSaved, setOpenSaved, setSelectedVenue } = drawerStore();
 
     const { allVenues, savedVenues, savedMenuItems } = savedStore();
     const [section, setSection] = useState('restaurants')
@@ -47,7 +47,7 @@ const SavedDrawer = () => {
                         <div className='mt-6 mx-4 overflow-y-scroll h-60'>
                             {savedVenues?.map((item: any, i: number) => {
                                 return (
-                                    <div className='flex mb-4' key={i}>
+                                    <div className='flex mb-6 w-full' key={i} onClick={() => setSelectedVenue(item)}>
                                         <Avatar
                                             style={{
                                                 backgroundColor: '#12411B',
@@ -59,10 +59,17 @@ const SavedDrawer = () => {
                                                 maxHeight: "90px",
                                             }}>{item?.name.toUpperCase()[0]}
                                         </Avatar>
-                                        <div className='flex-col ml-5 h-max my-auto'>
+                                        <div className='flex-col ml-5 h-max my-auto w-full'>
                                             <p className='font-bold text-base'>{item.name}</p>
                                             <p className='text-xs'>{item.location.address}</p>
+                                            <div className='flex -mt-5'>
+                                                <span className='ml-auto py-1 px-1.5 border-solid border-slate-200 text-black border-2 h-max  rounded-full text-xs bg-slate-200'>
+                                                    {savedMenuItems.filter((i: any) => i.venue_id === item.id).length} dishes saved
+                                                </span>
+                                            </div>
                                         </div>
+
+
                                     </div>
                                 )
                             })}
@@ -72,7 +79,7 @@ const SavedDrawer = () => {
                         <div className='mt-6 mx-4 overflow-y-scroll h-60'>
                             {savedMenuItems?.map((item: any, i: number) => {
                                 return (
-                                    <div className='flex mb-4' key={i}>
+                                    <div className='flex mb-4' key={i} onClick={() => setSelectedVenue(allVenues.filter((i: any) => i.id === item.venue_id)[0])}>
                                         <Avatar
                                             style={{
                                                 backgroundColor: '#12411B',
