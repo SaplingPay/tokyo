@@ -4,6 +4,7 @@ import filledHeart from './assets/filledheart.png';
 import heart from './assets/heart.png';
 import Image from 'next/image';
 import { savedStore } from '@/app/store/state';
+import { HeartFilled, HeartOutlined, HeartTwoTone } from '@ant-design/icons';
 
 type Props = {
     menu: any
@@ -79,13 +80,14 @@ function VenueMenu(props: Props) {
                                             </span>
                                         )}
                                         <button className='border-none bg-transparent' onClick={() => toggleSave(item)}>
-                                            <Image
+                                            {/* <Image
                                                 src={saves[item.id] ? filledHeart : heart}
                                                 alt="Like Icon"
                                                 width={22}
                                                 height={22}
                                                 style={{ marginLeft: ".5em", minWidth: "22px", minHeight: "22px" }}
-                                            />
+                                            /> */}
+                                            {saves[item.id] ? <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} /> : <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} />}
                                         </button>
                                     </div>
                                 </div>
@@ -105,19 +107,20 @@ function VenueMenu(props: Props) {
                                         <p className='text-base'>{item.name}</p>
                                         <div className='ml-auto flex items-left h-max'>
                                             {item.price > 0 && (
-                                                <span className='p-1.5 border-solid border-[#12411B] border-2 h-max rounded-full ml-1'>
+                                                <span className='p-1.5 border-solid border-[#12411B] bg-[#12411B] text-white border-2 h-max rounded-full ml-2'>
                                                     ${item.price.toFixed(2)}
                                                 </span>
                                             )}
                                             {/* <button className='my-auto h-max align-middle'><HeartIcon className='h-5 w-5' /></button> */}
                                             <button className='border-none bg-transparent' onClick={() => toggleSave(item)}>
-                                                <Image
+                                                {/* <Image
                                                     src={saves[item.id] ? filledHeart : heart}
                                                     alt="Like Icon"
                                                     width={22}
                                                     height={22}
                                                     style={{ marginLeft: ".5em", minWidth: "22px", minHeight: "22px" }}
-                                                />
+                                                /> */}
+                                                {saves[item.id] ? <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} /> : <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} />}
                                             </button>
                                         </div>
                                     </div>

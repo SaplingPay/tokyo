@@ -9,6 +9,17 @@ export const navStore = create((set: any) => ({
     })),
 }));
 
+export const drawerStore = create((set: any) => ({
+    openRecommend: true,
+    setOpenRecommend: (open: boolean) => set((state: any) => ({
+        openRecommend: open
+    })),
+    openSaved: false,
+    setOpenSaved: (open: boolean) => set((state: any) => ({
+        openSaved: open
+    })),
+}));
+
 export const userStore = create(
     persist((set: any) => ({
         user: null,

@@ -98,28 +98,14 @@ const RestaurantViewDrawer = (props: Props) => {
             modal={false}
             onOpenChange={props.setOpen}
         >
-            <DrawerContent className='h-[70%]'>
-                {/* <div className='flex'>
-                    <button className='ml-auto mr-7 mt-4 bg-slate-100 rounded-full p-1 text-black' onClick={() => props.setOpen(false)}>
-                        <XIcon className='h-5 w-5' />
-                    </button>
-                </div> */}
-                <div className='pt-4'>
-                    <div className='-mt-6 mb-2 pt-2 px-2'>
-                        <VenueInfo selectedVenue={props.selectedVenue} />
-                    </div>
+            <DrawerContent className='mt-6 max-h-[70%]'>
+                <div className='mb-2 pt-4 px-2'>
+                    <VenueInfo selectedVenue={props.selectedVenue} />
+                </div>
 
-                    {/* <div className='flex'>
-       <button className='ml-auto pr-2 -my-10 h-max' onClick={openFilters}>
-           <span className='mx-max text-x py-2 px-4 rounded-full border-solid border-black border-2'>Dietary Filters</span>
-       </button>
-   </div> */}
-
-                    {/* <Input placeholder="Search for a restaurant" prefix={<SearchOutlined />} /> */}
-                    <div className='mt-2 px-4'>
-                        <VenueMenu menu={menu} />
-                    </div>
-
+                {/* <Input placeholder="Search for a restaurant" prefix={<SearchOutlined />} /> */}
+                <div className='mt-2 px-4'>
+                    <VenueMenu menu={menu} />
                 </div>
 
 
