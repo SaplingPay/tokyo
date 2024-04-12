@@ -24,7 +24,7 @@ export default function Home() {
   const [welcomed, setWelcomed] = useState(false)
 
   useEffect(() => {
-    navStore.persist.rehydrate()
+    // navStore.persist.rehydrate()
     // if (!welcomed) {
     //   setInterval(() => {
     //     setWelcome(true)
