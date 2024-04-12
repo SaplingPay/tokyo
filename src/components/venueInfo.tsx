@@ -5,6 +5,7 @@ import filledHeart from './assets/filledheart.png';
 import heart from './assets/heart.png';
 import Image from 'next/image';
 import { savedStore } from '@/app/store/state';
+import { HeartOutlined, HeartTwoTone } from '@ant-design/icons';
 
 type Props = {
     selectedVenue: any
@@ -65,13 +66,14 @@ const VenueInfo = (props: Props) => {
                 <div className='flex flex-row'>
                     <p className='font-bold text-lg'>{props.selectedVenue?.name}</p>
                     <button className='border-none bg-transparent mb-2 mr-4' onClick={toggleSave}>
-                        <Image
+                        {/* <Image
                             src={saves[props.selectedVenue.id] ? filledHeart : heart}
                             alt="Like Icon"
                             width={22}
                             height={22}
                             style={{ marginLeft: ".5em", minWidth: "22px", minHeight: "22px", marginTop: '.1em' }}
-                        />
+                        /> */}
+                        {saves[props.selectedVenue.id] ? <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} /> : <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} />}
                     </button>
                 </div>
 

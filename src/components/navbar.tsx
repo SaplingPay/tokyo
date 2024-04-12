@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import React, { useState } from 'react'
 import { Button } from './ui/button'
-import { navStore } from '@/app/store/state'
+import { drawerStore, navStore } from '@/app/store/state'
 
 type Props = {
 
@@ -9,9 +9,17 @@ type Props = {
 
 const Navbar = (props: Props) => {
     const { current, update } = navStore();
+    const { openRecommend, setOpenRecommend, openSaved, setOpenSaved } = drawerStore();
 
     const toggle = (item: string) => {
         update(item)
+        if (item === "For You") {
+            setOpenSaved(false)
+            setOpenRecommend(!openRecommend)
+        } else {
+            setOpenRecommend(false)
+            setOpenSaved(!openSaved)
+        }
     }
 
     return (

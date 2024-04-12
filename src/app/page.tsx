@@ -11,13 +11,13 @@ import SavedDrawer from "@/components/savedDrawer";
 import RestaurantViewDrawer from "@/components/restaurantViewDrawer";
 import { Modal } from "antd";
 import { CreateMenu, GetMenus, GetVenues, UpdateVenue } from "./actions";
+import RecommendedDrawer from "@/components/recommendedDrawer";
 
 
 export default function Home() {
 
   const [openVenueDrawer, setOpenVenueDrawer] = useState(false)
   const [selectedVenue, setSelectedVenue] = useState<any>(null)
-
 
   useEffect(() => {
     savedStore.persist.rehydrate()
@@ -29,10 +29,15 @@ export default function Home() {
 
   return (
     <main>
+
       <Map setSelectedVenue={setSelectedVenue} setOpenVenueDrawer={setOpenVenueDrawer} />
       <Navbar />
 
       <RestaurantViewDrawer setOpen={setOpenVenueDrawer} open={openVenueDrawer} selectedVenue={selectedVenue} />
+      <RecommendedDrawer />
+      <SavedDrawer />
+
+
 
     </main>
   );
