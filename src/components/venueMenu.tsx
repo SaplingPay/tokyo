@@ -38,7 +38,11 @@ function VenueMenu(props: Props) {
                                     <div className='flex mb-6' key={i}>
                                         <p className='text-base'>{item.name}</p>
                                         <div className='ml-auto'>
-                                            <span className='p-1.5 border-solid border-[#12411B] border-2 rounded-full ml-1'>${item.price}</span>
+                                               {item.price > 0 && ( 
+                                                <span className='p-1.5 border-solid border-[#12411B] border-2 rounded-full ml-1'>
+                                                    ${item.price.toFixed(2)}
+                                                </span>
+                                            )}
                                             {/* <button className='my-auto h-max align-middle'><HeartIcon className='h-5 w-5' /></button> */}
                                         </div>
                                     </div>
