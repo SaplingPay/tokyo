@@ -29,7 +29,7 @@ export default function Home() {
 
   return (
     <main>
-      <Map setSelectedVenue={setSelectedVenue} />
+      <Map setSelectedVenue={setSelectedVenue} setOpenVenueDrawer={setOpenVenueDrawer} />
 
       <RestaurantViewDrawer setOpen={setOpenVenueDrawer} open={openVenueDrawer} selectedVenue={selectedVenue} />
 

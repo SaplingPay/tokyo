@@ -32,7 +32,7 @@ function VenueMenu(props: Props) {
                 const id = String(i + 1);
                 return (
                     <Tabs.TabPane key={id} tab={cat}>
-                        <div className='px-2 py-4'>
+                        <div className='px-2 py-4 overflow-y-scroll h-80'>
                             {filterMenu(cat)?.map((item: any, i: number) => {
                                 return (
                                     <div className='flex mb-6' key={i}>
