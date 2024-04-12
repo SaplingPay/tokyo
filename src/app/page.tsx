@@ -5,7 +5,7 @@ import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { use, useEffect, useState } from "react";
 import { ChevronUp, ShareIcon } from 'lucide-react';
-import { navStore } from './store/state'
+import { navStore, savedStore } from './store/state'
 
 import SavedDrawer from "@/components/savedDrawer";
 import RestaurantViewDrawer from "@/components/restaurantViewDrawer";
@@ -20,7 +20,7 @@ export default function Home() {
 
 
   useEffect(() => {
-    navStore.persist.rehydrate()
+    savedStore.persist.rehydrate()
   }, [])
 
   useEffect(() => {
@@ -30,6 +30,7 @@ export default function Home() {
   return (
     <main>
       <Map setSelectedVenue={setSelectedVenue} setOpenVenueDrawer={setOpenVenueDrawer} />
+      <Navbar />
 
       <RestaurantViewDrawer setOpen={setOpenVenueDrawer} open={openVenueDrawer} selectedVenue={selectedVenue} />
 
