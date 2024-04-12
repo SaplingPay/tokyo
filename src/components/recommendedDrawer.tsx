@@ -8,7 +8,7 @@ type Props = {
 }
 
 const RecommendedDrawer = () => {
-    const { openRecommend, setOpenRecommend } = drawerStore();
+    const { openRecommend, setOpenRecommend, selectedVenue, setSelectedVenue } = drawerStore();
 
     const { allVenues } = savedStore();
     // const [open, setOpen] = useState(true)
@@ -27,7 +27,7 @@ const RecommendedDrawer = () => {
                 <div className='mt-4 mx-4 overflow-y-scroll h-80'>
                     {allVenues?.map((item: any, i: number) => {
                         return (
-                            <div className='flex mb-4' key={i}>
+                            <div className='flex mb-4' key={i} onClick={() => setSelectedVenue(item)}>
                                 <Avatar
                                     style={{
                                         backgroundColor: '#12411B',

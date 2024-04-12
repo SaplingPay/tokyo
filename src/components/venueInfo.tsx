@@ -77,7 +77,7 @@ const VenueInfo = (props: Props) => {
                     </button>
                 </div>
 
-                <p className='font-bold text-s mb-2'>{props.selectedVenue?.location.address}</p>
+                <p className='font-bold text-sm mb-2'>{props.selectedVenue?.location.address}</p>
                 {/* <p className='text-xs'>🥐☕️ Cafe Bakery</p> */}
             </div>
         </div>
