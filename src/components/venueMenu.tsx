@@ -1,5 +1,8 @@
 import { Tabs } from 'antd';
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import filledHeart from './assets/filledheart.png';
+import heart from './assets/heart.png';
+import Image from 'next/image';
 
 type Props = {
     menu: any
@@ -7,7 +10,8 @@ type Props = {
 
 function VenueMenu(props: Props) {
 
-    const [categories, setCategories] = React.useState<any>([])
+    const [categories, setCategories] = useState<any>([])
+    const [saves, setSaves] = useState<{[key: string]: boolean}>({});
 
     useEffect(() => {
         console.log('props.menu', props.menu)
@@ -17,6 +21,12 @@ function VenueMenu(props: Props) {
         console.log('categories', catSet)
         setCategories(Array.from(catSet))
 
+        const saves = {};
+        props.menu?.items?.forEach((item: any) => {
+            saves[item.id] = false;  
+        });
+        setSaves(saves);
+
         return () => {
 
         }
@@ -25,6 +35,14 @@ function VenueMenu(props: Props) {
     const filterMenu = (category: string) => {
         return props.menu?.items?.filter((mI: any) => mI.categories[0] === category)
     }
+
+    const toggleSave = (itemId: string) => {
+        setSaves(prev => ({
+            ...prev,
+            [itemId]: !prev[itemId]
+        }));
+    };
+
 
     return (
         <Tabs>
@@ -37,13 +55,22 @@ function VenueMenu(props: Props) {
                                 return (
                                     <div className='flex mb-6' key={i}>
                                         <p className='text-base'>{item.name}</p>
-                                        <div className='ml-auto'>
+                                        <div className='ml-auto flex items-left'>
                                                {item.price > 0 && ( 
                                                 <span className='p-1.5 border-solid border-[#12411B] border-2 rounded-full ml-1'>
                                                     ${item.price.toFixed(2)}
                                                 </span>
                                             )}
                                             {/* <button className='my-auto h-max align-middle'><HeartIcon className='h-5 w-5' /></button> */}
+                                            <button className='border-none bg-transparent' onClick={() => toggleSave(item.id)}>
+                                        <Image
+                                                src={saves[item.id] ? filledHeart : heart}
+                                                alt="Like Icon"
+                                                width={22} 
+                                                height={22}
+                                                style={{marginLeft:".5em", minWidth:"22px", minHeight:"22px"}}
+                                                />
+                                        </button>
                                         </div>
                                     </div>
                                 )
