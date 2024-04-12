@@ -1,24 +1,46 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Map, { Marker } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { GetVenues } from '@/app/actions';
 
 type Props = {
     markerClick?: () => void
+    setSelectedVenue?: (venue: any) => void
 }
 
 const Page = (props: Props) => {
+    const [venues, setVenues] = useState<any[]>([])
+
+    useEffect(() => {
+        GetVenues().then((res: any) => {
+            console.log('res', res)
+            setVenues(res)
+        })
+
+        return () => { }
+    }, [])
+
     return (
         <Map
             mapboxAccessToken={process.env.MAP_TOKEN}
             initialViewState={{
-                longitude: 4.916990558831426,
-                latitude: 52.349281395406265,
+                longitude: 4.885872830894215,
+                latitude: 52.35999079266464,
                 zoom: 12
             }}
             style={{ width: '100vw', height: '100vh', overflow: "hidden" }}
             mapStyle="mapbox://styles/mapbox/streets-v9"
         >
-            <Marker longitude={4.916990558831426} latitude={52.349281395406265} anchor="bottom" onClick={props.markerClick}>
+            {venues.map((venue, index) => {
+                return (
+                    <Marker key={index} longitude={venue.location.latitude} latitude={venue.location.longitude} anchor="bottom" onClick={() => props.setSelectedVenue!(venue)}>
+                        <div>
+                            <img src="Map_pin.png" className="w-7 h-8" />
+                        </div>
+                    </Marker>
+                )
+            })}
+            {/* <Marker longitude={4.916990558831426} latitude={52.349281395406265} anchor="bottom" onClick={props.markerClick}>
                 <div>
                     <img src="Map_pin.png" className="w-7 h-8" />
                 </div>
@@ -28,7 +50,7 @@ const Page = (props: Props) => {
                 <div>
                     <img src="Map_pin.png" className="w-7 h-8" />
                 </div>
-            </Marker>
+            </Marker> */}
         </Map>
     )
 }

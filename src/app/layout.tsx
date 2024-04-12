@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Epilogue } from "next/font/google";
 import "./globals.css";
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import { ConfigProvider } from "antd";
 
 const font = Epilogue({ subsets: ["latin"] });
 
@@ -59,7 +60,16 @@ export default function RootLayout({
     <html lang="en">
       <body className={font.className}>
         <AntdRegistry>
-          {children}
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: '#12411B',
+                borderRadius: 10,
+              },
+            }}
+          >
+            {children}
+          </ConfigProvider>
         </AntdRegistry>
       </body>
     </html>
