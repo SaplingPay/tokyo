@@ -17,6 +17,7 @@
     "@serwist/sw": "^9.0.0-preview.21",
     "@types/mapbox-gl": "^3.1.0",
     "antd": "^5.16.1",
+    "axios": "^1.6.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide-react": "^0.364.0",
