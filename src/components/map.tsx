@@ -31,7 +31,7 @@ const Page = (props: Props) => {
             style={{ width: '100vw', height: '100vh', overflow: "hidden" }}
             mapStyle="mapbox://styles/mapbox/streets-v9"
         >
-            {venues.map((venue, index) => {
+            {venues?.map((venue, index) => {
                 return (
                     <Marker key={index} longitude={venue.location.latitude} latitude={venue.location.longitude} anchor="bottom" onClick={() => props.setSelectedVenue!(venue)}>
                         <div>
