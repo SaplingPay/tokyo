@@ -11,6 +11,7 @@
   "dependencies": {
     "@ant-design/icons": "^5.3.6",
     "@ant-design/nextjs-registry": "^1.0.0",
+    "@clerk/nextjs": "^4.29.12",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-slot": "^1.0.2",
     "@serwist/next": "^9.0.0-preview.21",

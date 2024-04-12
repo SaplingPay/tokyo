@@ -3,6 +3,7 @@ import { Inter, Epilogue } from "next/font/google";
 import "./globals.css";
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { ConfigProvider } from "antd";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const font = Epilogue({ subsets: ["latin"] });
 
@@ -57,21 +58,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={font.className}>
-        <AntdRegistry>
-          <ConfigProvider
-            theme={{
-              token: {
-                colorPrimary: '#12411B',
-                borderRadius: 10,
-              },
-            }}
-          >
-            {children}
-          </ConfigProvider>
-        </AntdRegistry>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={font.className}>
+          <AntdRegistry>
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorPrimary: '#12411B',
+                  borderRadius: 10,
+                },
+              }}
+            >
+              {children}
+            </ConfigProvider>
+          </AntdRegistry>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
