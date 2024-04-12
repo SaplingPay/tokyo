@@ -6,6 +6,7 @@ import { GetVenues } from '@/app/actions';
 type Props = {
     markerClick?: () => void
     setSelectedVenue?: (venue: any) => void
+    setOpenVenueDrawer?: (open: boolean) => void
 }
 
 const Page = (props: Props) => {
@@ -20,6 +21,13 @@ const Page = (props: Props) => {
         return () => { }
     }, [])
 
+    const selectVenue = (venue: any) => {
+        console.log('venue', venue)
+        props.setSelectedVenue!(venue)
+        props.setOpenVenueDrawer!(true)
+    }
+
+
     return (
         <Map
             mapboxAccessToken={process.env.MAP_TOKEN}
@@ -33,7 +41,7 @@ const Page = (props: Props) => {
         >
             {venues?.map((venue, index) => {
                 return (
-                    <Marker key={index} longitude={venue.location.latitude} latitude={venue.location.longitude} anchor="bottom" onClick={() => props.setSelectedVenue!(venue)}>
+                    <Marker key={index} longitude={venue.location.latitude} latitude={venue.location.longitude} anchor="bottom" onClick={() => selectVenue(venue)}>
                         <div>
                             <img src="Map_pin.png" className="w-7 h-8" />
                         </div>
