@@ -56,15 +56,19 @@ function VenueMenu(props: Props) {
                                     <div className='flex mb-6' key={i}>
                                         <p className='text-base'>{item.name}</p>
                                         <div className='ml-auto flex items-left'>
-                                            <span className='p-1.5 border-solid border-[#12411B] border-2 rounded-full ml-1'>${item.price}</span>
+                                               {item.price > 0 && ( 
+                                                <span className='p-1.5 border-solid border-[#12411B] border-2 rounded-full ml-1'>
+                                                    ${item.price.toFixed(2)}
+                                                </span>
+                                            )}
                                             {/* <button className='my-auto h-max align-middle'><HeartIcon className='h-5 w-5' /></button> */}
                                             <button className='border-none bg-transparent' onClick={() => toggleSave(item.id)}>
                                         <Image
                                                 src={saves[item.id] ? filledHeart : heart}
                                                 alt="Like Icon"
-                                                width={25}  // specify the width
-                                                height={25} // specify the height
-                                                style={{marginLeft:".5em"}}
+                                                width={22} 
+                                                height={22}
+                                                style={{marginLeft:".5em", minWidth:"22px", minHeight:"22px"}}
                                                 />
                                         </button>
                                         </div>
