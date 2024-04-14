@@ -9,15 +9,17 @@ type Props = {
 
 const Navbar = (props: Props) => {
     const { current, update } = navStore();
-    const { openRecommend, setOpenRecommend, openSaved, setOpenSaved } = drawerStore();
+    const { openRecommend, setOpenRecommend, openSaved, setOpenSaved, setOpenVenue } = drawerStore();
 
     const toggle = (item: string) => {
         update(item)
         if (item === "For You") {
             setOpenSaved(false)
+            setOpenVenue(false)
             setOpenRecommend(!openRecommend)
         } else {
             setOpenRecommend(false)
+            setOpenVenue(false)
             setOpenSaved(!openSaved)
         }
     }

@@ -40,7 +40,7 @@ const drawerStyles: DrawerStyles = {
 const RestaurantViewDrawer = (props: Props) => {
 
     const [menu, setMenu] = useState<any>(null)
-    const { selectedVenue, setSelectedVenue, setOpenRecommend, setOpenSaved, setOpenVenueFunc } = drawerStore();
+    const { selectedVenue, setSelectedVenue, setOpenRecommend, setOpenSaved, setOpenVenueFunc, openVenue: openVenueDrawer } = drawerStore();
 
     const openVenue = (venue: any) => {
         setOpenRecommend(false)
@@ -67,6 +67,14 @@ const RestaurantViewDrawer = (props: Props) => {
             })
         setOpenVenueFunc(openVenue)
     }, [props.selectedVenue])
+
+    useEffect(() => {
+        setOpenVenueFunc(openVenue)
+    }, [])
+
+    useEffect(() => {
+        props.setOpen(openVenueDrawer)
+    }, [openVenueDrawer])
 
     return (
         <Drawer
