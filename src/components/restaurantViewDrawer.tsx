@@ -45,25 +45,16 @@ const drawerStyles: DrawerStyles = {
 const RestaurantViewDrawer = (props: Props) => {
 
     const [menu, setMenu] = useState<any>(null)
-    const { selectedVenue, setSelectedVenue, setOpenRecommend, setOpenSaved } = drawerStore();
+    const { selectedVenue, setSelectedVenue, setOpenRecommend, setOpenSaved, setOpenVenueFunc } = drawerStore();
 
     const openFilters = () => {
         props.setOpen(false)
     }
 
-    useEffect(() => {
-        console.log('WORKING selectedVenue', props.selectedVenue)
-        if (!props.selectedVenue) return
-        GetMenu(props.selectedVenue?.id, props.selectedVenue?.menu_id)
-            .then((res: any) => {
-                console.log('res', res)
-                setMenu(res)
-            })
-    }, [props.selectedVenue])
-
-    useEffect(() => {
+    const openVenue = (venue: any) => {
         setOpenRecommend(false)
         setOpenSaved(false)
+        setSelectedVenue(venue)
         props.setOpen(true)
 
         if (selectedVenue !== null && selectedVenue !== undefined) {
@@ -74,9 +65,35 @@ const RestaurantViewDrawer = (props: Props) => {
                     setMenu(res)
                 })
         }
-        return () => {
-        }
-    }, [selectedVenue])
+    }
+
+    useEffect(() => {
+        console.log('WORKING selectedVenue', props.selectedVenue)
+        if (!props.selectedVenue) return
+        GetMenu(props.selectedVenue?.id, props.selectedVenue?.menu_id)
+            .then((res: any) => {
+                console.log('res', res)
+                setMenu(res)
+            })
+        setOpenVenueFunc(openVenue)
+    }, [props.selectedVenue])
+
+    // useEffect(() => {
+    //     setOpenRecommend(false)
+    //     setOpenSaved(false)
+    //     props.setOpen(true)
+
+    //     if (selectedVenue !== null && selectedVenue !== undefined) {
+    //         const { id, menu_id } = selectedVenue; // Add type checking and destructuring
+    //         GetMenu(id, menu_id)
+    //             .then((res: any) => {
+    //                 console.log('res', res)
+    //                 setMenu(res)
+    //             })
+    //     }
+    //     return () => {
+    //     }
+    // }, [selectedVenue])
 
 
     return (
