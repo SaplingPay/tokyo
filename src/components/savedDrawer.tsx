@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from './ui/drawer';
-import { Avatar, Button } from 'antd';
+import React, { useState } from 'react';
+import { Drawer, DrawerContent } from './ui/drawer';
+import { Avatar } from 'antd';
 import { drawerStore, savedStore } from '@/app/store/state';
 
 type Props = {
@@ -8,20 +8,10 @@ type Props = {
 }
 
 const SavedDrawer = () => {
-    const { openSaved, setOpenSaved, setSelectedVenue, openVenueFunc } = drawerStore();
+    const { openSaved, setOpenSaved, openVenueFunc } = drawerStore();
 
     const { allVenues, savedVenues, savedMenuItems } = savedStore();
     const [section, setSection] = useState('restaurants')
-
-    useEffect(() => {
-        console.log('savedVenues', savedVenues)
-        console.log('savedMenuItems', savedMenuItems)
-
-
-        return () => {
-
-        }
-    }, [])
 
     return (
         <Drawer
@@ -30,10 +20,6 @@ const SavedDrawer = () => {
             onOpenChange={setOpenSaved}
         >
             <DrawerContent className={`h-[50%]`}>
-                {/* <DrawerHeader>
-                    <DrawerTitle>Saved Restaurants and Dishes</DrawerTitle>
-                </DrawerHeader> */}
-
                 <div className='mt-4 mx-4 overflow-y-scroll h-100'>
                     <div className='flex w-max mx-auto'>
                         <button className={`flex-col mr-5 -ml-5 text-center w-30 ${section === 'restaurants' ? 'text-black' : 'text-gray-400'}`} onClick={() => setSection('restaurants')}>

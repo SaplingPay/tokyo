@@ -1,9 +1,5 @@
 import { Avatar } from 'antd'
-import { HeartIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
-import filledHeart from './assets/filledheart.png';
-import heart from './assets/heart.png';
-import Image from 'next/image';
 import { savedStore } from '@/app/store/state';
 import { HeartOutlined, HeartTwoTone } from '@ant-design/icons';
 
@@ -41,8 +37,6 @@ const VenueInfo = (props: Props) => {
         });
         setSaves(saves);
 
-        console.log('props.selectedVenue', props.selectedVenue)
-        console.log('savedVenues', savedVenues)
         return () => {
 
         }

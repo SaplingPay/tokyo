@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from './ui/drawer';
-import { Avatar, Button } from 'antd';
+import React from 'react';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from './ui/drawer';
+import { Avatar } from 'antd';
 import { drawerStore, savedStore } from '@/app/store/state';
 
 type Props = {
@@ -8,11 +8,9 @@ type Props = {
 }
 
 const RecommendedDrawer = () => {
-    const { openRecommend, setOpenRecommend, selectedVenue, setSelectedVenue, openVenueFunc } = drawerStore();
+    const { openRecommend, setOpenRecommend, openVenueFunc } = drawerStore();
 
     const { allVenues } = savedStore();
-    // const [open, setOpen] = useState(true)
-
     return (
         <Drawer
             open={openRecommend}
