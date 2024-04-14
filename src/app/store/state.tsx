@@ -22,6 +22,12 @@ export const drawerStore = create((set: any) => ({
     setSelectedVenue: (venue: any) => set((state: any) => ({
         selectedVenue: venue
     })),
+    openVenueFunc: (venue: any) => { },
+    setOpenVenueFunc: (func: any) => {
+        set(() => ({
+            openVenueFunc: func,
+        }))
+    }
 }));
 
 export const userStore = create(

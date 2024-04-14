@@ -1,10 +1,7 @@
 import { Tabs } from 'antd';
 import React, { useEffect, useState } from 'react'
-import filledHeart from './assets/filledheart.png';
-import heart from './assets/heart.png';
-import Image from 'next/image';
 import { savedStore } from '@/app/store/state';
-import { HeartFilled, HeartOutlined, HeartTwoTone } from '@ant-design/icons';
+import { HeartOutlined, HeartTwoTone } from '@ant-design/icons';
 
 type Props = {
     menu: any
@@ -14,15 +11,12 @@ function VenueMenu(props: Props) {
 
     const [categories, setCategories] = useState<any>([])
     const [saves, setSaves] = useState<{ [key: string]: boolean }>({});
-    // use savedStore
     const { savedMenuItems, saveMenuItem, removeMenuItem } = savedStore();
 
     useEffect(() => {
-        console.log('props.menu', props.menu)
         const categories = props.menu?.items?.map((item: any) => item.categories[0])
         const catSet = new Set(categories)
 
-        console.log('categories', catSet)
         setCategories(Array.from(catSet))
 
         const saves = {} as { [key: string]: boolean };
@@ -34,8 +28,6 @@ function VenueMenu(props: Props) {
             }
         });
         setSaves(saves);
-
-        console.log('saves', savedMenuItems)
 
         return () => {
 
@@ -61,7 +53,6 @@ function VenueMenu(props: Props) {
         }
     };
 
-    console.log("savedMenuItems", savedMenuItems)
     const filteredSavedMenuItems = savedMenuItems?.filter((item: any) => item?.venue_id === props.menu?.venue_id);
 
     return (
@@ -80,13 +71,6 @@ function VenueMenu(props: Props) {
                                             </span>
                                         )}
                                         <button className='border-none bg-transparent' onClick={() => toggleSave(item)}>
-                                            {/* <Image
-                                                src={saves[item.id] ? filledHeart : heart}
-                                                alt="Like Icon"
-                                                width={22}
-                                                height={22}
-                                                style={{ marginLeft: ".5em", minWidth: "22px", minHeight: "22px" }}
-                                            /> */}
                                             {saves[item.id] ? <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} /> : <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} />}
                                         </button>
                                     </div>
