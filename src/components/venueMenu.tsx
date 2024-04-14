@@ -56,6 +56,8 @@ function VenueMenu(props: Props) {
     const filteredSavedMenuItems = savedMenuItems?.filter((item: any) => item?.venue_id === props.menu?.venue_id);
 
     return (
+        // <Tabs defaultActiveKey='0' type="card" tabBarStyle={{ margin: '0' }}>
+        //     <Tabs.TabPane key='0' tab='Breakfast' >
         <Tabs>
             {filteredSavedMenuItems && filteredSavedMenuItems.length > 0 && (
                 <Tabs.TabPane key='0' tab='Saved'>
@@ -115,6 +117,14 @@ function VenueMenu(props: Props) {
                 );
             })}
         </Tabs>
+
+        // </Tabs.TabPane>
+        // <Tabs.TabPane key='1' tab='Lunch'></Tabs.TabPane>
+        // <Tabs.TabPane key='2' tab='Dinner'></Tabs.TabPane>
+        // <Tabs.TabPane key='3' tab='Drinks'></Tabs.TabPane>
+
+        // </Tabs> 
+
     )
 }
 

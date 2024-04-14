@@ -88,7 +88,7 @@ const RestaurantViewDrawer = (props: Props) => {
                 </div>
 
                 {/* <Input placeholder="Search for a restaurant" prefix={<SearchOutlined />} /> */}
-                <div className='mt-2 px-4'>
+                <div className='mt-2 pl-4'>
                     <VenueMenu menu={menu} />
                 </div>
 
