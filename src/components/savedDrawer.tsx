@@ -19,7 +19,7 @@ const SavedDrawer = () => {
             modal={false}
             onOpenChange={setOpenSaved}
         >
-            <DrawerContent className={`h-[50%]`}>
+            <DrawerContent className={`h-[70%]`}>
                 <DrawerHeader style={{ paddingTop: "1em", paddingBottom: "0" }}>
                     <DrawerTitle>
                         <div className='flex w-max mx-auto'>

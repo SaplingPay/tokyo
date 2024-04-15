@@ -1,6 +1,5 @@
 'use client'
-import React, { use, useEffect, useState } from 'react'
-import { DrawerStyles } from 'antd/es/drawer/DrawerPanel';
+import React, { useEffect, useState } from 'react'
 import { Inter, Epilogue } from "next/font/google";
 const font = Epilogue({ subsets: ["latin"] });
 import VenueInfo from './venueInfo';
@@ -10,89 +9,55 @@ import { Drawer, DrawerContent } from './ui/drawer';
 import { drawerStore } from '@/app/store/state';
 
 type Props = {
-    setOpen: (open: boolean) => void
-    open: boolean
-    selectedVenue: any
+
 }
-
-const drawerStyles: DrawerStyles = {
-    header: {
-        display: "none",
-    },
-    body: {
-        padding: 0,
-
-    },
-    footer: {
-        display: "none",
-    },
-    content: {
-        borderRadius: "3rem 3rem 0 0",
-        padding: "0",
-        boxShadow: "none",
-    },
-    wrapper: {
-        boxShadow: "none"
-    }
-
-};
 
 const RestaurantViewDrawer = (props: Props) => {
 
+    const [venue, setVenue] = useState<any>(null)
     const [menu, setMenu] = useState<any>(null)
-    const { selectedVenue, setSelectedVenue, setOpenRecommend, setOpenSaved, setOpenVenueFunc, openVenue: openVenueDrawer } = drawerStore();
+    const [menus, setMenus] = useState<any[]>([])
+    const { setOpenRecommend, setOpenSaved, setOpenVenueFunc } = drawerStore();
+
+    const [open, setOpen] = useState(false)
 
     const openVenue = (venue: any) => {
         setOpenRecommend(false)
         setOpenSaved(false)
-        setSelectedVenue(venue)
-        props.setOpen(true)
+        setVenue(venue)
+        setOpen(true)
+        setMenus([])
 
-        if (selectedVenue !== null && selectedVenue !== undefined) {
-            const { id, menu_id } = selectedVenue;
-            GetMenu(id, menu_id)
-                .then((res: any) => {
-                    console.log('res', res)
-                    setMenu(res)
-                })
+        if (venue !== null && venue !== undefined) {
+            for (let i = 0; i < venue?.menu_ids?.length; i++) {
+                GetMenu(venue.id, venue.menu_ids[i])
+                    .then((res: any) => {
+                        console.log('res - menu', res)
+                        setMenus(prev => [...prev, res])
+                    })
+            }
         }
     }
-
-    useEffect(() => {
-        if (!props.selectedVenue) return
-        GetMenu(props.selectedVenue?.id, props.selectedVenue?.menu_id)
-            .then((res: any) => {
-                console.log('res', res)
-                setMenu(res)
-            })
-        setOpenVenueFunc(openVenue)
-    }, [props.selectedVenue])
 
     useEffect(() => {
         setOpenVenueFunc(openVenue)
     }, [])
 
-    useEffect(() => {
-        props.setOpen(openVenueDrawer)
-    }, [openVenueDrawer])
-
     return (
         <Drawer
-            open={props.open}
+            open={open}
             modal={false}
-            onOpenChange={props.setOpen}
+            onOpenChange={setOpen}
         >
-            <DrawerContent className='mt-6 max-h-[70%]'>
+            <DrawerContent className={`h-[70%]`}>
                 <div className='mb-2 pt-4 px-2'>
-                    <VenueInfo selectedVenue={props.selectedVenue} />
+                    <VenueInfo selectedVenue={venue} />
                 </div>
 
                 {/* <Input placeholder="Search for a restaurant" prefix={<SearchOutlined />} /> */}
                 <div className='mt-2 pl-4'>
-                    <VenueMenu menu={menu} />
+                    <VenueMenu menus={menus} />
                 </div>
-
-
             </DrawerContent>
         </Drawer>
     )

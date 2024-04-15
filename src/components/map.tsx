@@ -2,18 +2,16 @@ import React, { use, useEffect, useState } from 'react'
 import Map, { Marker } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { GetVenues } from '@/app/actions';
-import { navStore, savedStore } from '@/app/store/state';
+import { drawerStore, navStore, savedStore } from '@/app/store/state';
 
 type Props = {
-    markerClick?: () => void
-    setSelectedVenue?: (venue: any) => void
-    setOpenVenueDrawer?: (open: boolean) => void
 }
 
 const Page = (props: Props) => {
     const [venues, setVenues] = useState<any[]>([])
     const { current } = navStore();
     const { savedVenues, allVenues, storeVenues } = savedStore();
+    const { setSelectedVenue, openVenueFunc } = drawerStore();
 
     useEffect(() => {
         GetVenues().then((res: any) => {
@@ -27,8 +25,8 @@ const Page = (props: Props) => {
 
     const selectVenue = (venue: any) => {
         console.log('venue', venue)
-        props.setSelectedVenue!(venue)
-        props.setOpenVenueDrawer!(true)
+        setSelectedVenue!(venue)
+        openVenueFunc(venue)
     }
 
     useEffect(() => {
@@ -65,22 +63,10 @@ const Page = (props: Props) => {
                             <div className='p-2 min-w-[3.5em] text-center bg-[#12411B] text-[#F5FFBE] rounded-full border-2 border-solid border-white'>
                                 {venue.name.toUpperCase()[0]}
                             </div>
-                            {/* <img src="Map_pin.png" className="w-7 h-8" /> */}
                         </div>
                     </Marker>
                 )
             })}
-            {/* <Marker longitude={4.916990558831426} latitude={52.349281395406265} anchor="bottom" onClick={props.markerClick}>
-                <div>
-                    <img src="Map_pin.png" className="w-7 h-8" />
-                </div>
-            </Marker>
-
-            <Marker longitude={4.902386793443318} latitude={52.35344651515512} anchor="bottom">
-                <div>
-                    <img src="Map_pin.png" className="w-7 h-8" />
-                </div>
-            </Marker> */}
         </Map>
     )
 }

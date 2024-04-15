@@ -17,7 +17,7 @@ const RecommendedDrawer = () => {
             modal={false}
             onOpenChange={setOpenRecommend}
         >
-            <DrawerContent className={`h-[50%]`}>
+            <DrawerContent className={`h-[70%]`}>
                 <DrawerHeader>
                     <DrawerTitle>Recommended Restaurants For You</DrawerTitle>
                 </DrawerHeader>
