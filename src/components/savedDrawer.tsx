@@ -44,17 +44,20 @@ const SavedDrawer = () => {
                                 {savedVenues?.map((item: any, i: number) => {
                                     return (
                                         <div className='flex mb-6 w-full' key={i} onClick={() => openVenueFunc(item)}>
-                                            <Avatar
-                                                style={{
-                                                    backgroundColor: '#12411B',
-                                                    color: '#F5FFBE',
-                                                    marginLeft: ".5em",
-                                                    minWidth: "60px",
-                                                    minHeight: "60px",
-                                                    maxWidth: "90px",
-                                                    maxHeight: "90px",
-                                                }}>{item?.name.toUpperCase()[0]}
-                                            </Avatar>
+                                            {item?.profile_pic_url ?
+                                                <img src={item.profile_pic_url} alt={""} style={{ width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover' }} />
+                                                :
+                                                <Avatar
+                                                    style={{
+                                                        backgroundColor: '#12411B',
+                                                        color: '#F5FFBE',
+                                                        minWidth: "60px",
+                                                        minHeight: "60px",
+                                                        maxWidth: "90px",
+                                                        maxHeight: "90px",
+                                                    }}>{item.name.toUpperCase()[0]}
+                                                </Avatar>
+                                            }
                                             <div className='flex-col ml-5 h-max my-auto w-full'>
                                                 <p className='font-bold text-base'>{item.name}</p>
                                                 <div className='flex justify-between'>
@@ -74,17 +77,20 @@ const SavedDrawer = () => {
                                 {savedMenuItems?.map((item: any, i: number) => {
                                     return (
                                         <div className='flex mb-6 w-full' key={i} onClick={() => openVenueFunc(allVenues.filter((i: any) => i.id === item.venue_id)[0])}>
-                                            <Avatar
-                                                style={{
-                                                    backgroundColor: '#12411B',
-                                                    color: '#F5FFBE',
-                                                    marginLeft: ".5em",
-                                                    minWidth: "60px",
-                                                    minHeight: "60px",
-                                                    maxWidth: "90px",
-                                                    maxHeight: "90px",
-                                                }}>{allVenues.filter((i: any) => i.id === item.venue_id)[0]?.name.toUpperCase()[0]}
-                                            </Avatar>
+                                            {allVenues.filter((i: any) => i.id === item.venue_id)[0]?.profile_pic_url ?
+                                                <img src={allVenues.filter((i: any) => i.id === item.venue_id)[0]?.profile_pic_url} alt={""} style={{ width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover' }} />
+                                                :
+                                                <Avatar
+                                                    style={{
+                                                        backgroundColor: '#12411B',
+                                                        color: '#F5FFBE',
+                                                        minWidth: "60px",
+                                                        minHeight: "60px",
+                                                        maxWidth: "90px",
+                                                        maxHeight: "90px",
+                                                    }}>{allVenues.filter((i: any) => i.id === item.venue_id)[0]?.name.toUpperCase()[0]}
+                                                </Avatar>
+                                            }
                                             <div className='flex-col ml-5 h-max my-auto w-full'>
                                                 <p className='font-bold text-base'>{item.name}</p>
                                                 <p className='text-xs'>{allVenues.filter((i: any) => i.id === item.venue_id)[0]?.name}</p>

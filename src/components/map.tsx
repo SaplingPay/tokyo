@@ -3,6 +3,7 @@ import Map, { Marker } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { GetVenues } from '@/app/actions';
 import { drawerStore, navStore, savedStore } from '@/app/store/state';
+import { Avatar } from 'antd';
 
 type Props = {
 }
@@ -59,11 +60,20 @@ const Page = (props: Props) => {
             {venues?.map((venue, index) => {
                 return (
                     <Marker key={index} longitude={venue.location.latitude} latitude={venue.location.longitude} anchor="bottom" onClick={() => selectVenue(venue)}>
-                        <div>
-                            <div className='p-2 min-w-[3.5em] text-center bg-[#12411B] text-[#F5FFBE] rounded-full border-2 border-solid border-white'>
-                                {venue.name.toUpperCase()[0]}
-                            </div>
-                        </div>
+                        {
+                            venue?.profile_pic_url ?
+                                <img src={venue.profile_pic_url} alt={""} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: 'white 2px solid' }} />
+                                :
+                                <Avatar
+                                    style={{
+                                        backgroundColor: '#12411B',
+                                        color: '#F5FFBE',
+                                        width: "40px",
+                                        height: "40px",
+                                        border: 'white 2px solid'
+                                    }}>{venue.name.toUpperCase()[0]}
+                                </Avatar>
+                        }
                     </Marker>
                 )
             })}
