@@ -44,35 +44,36 @@ const VenueInfo = (props: Props) => {
 
     return (
         <div className='flex'>
-            {/* <Avatar size={120} src="https://bloximages.newyork1.vip.townnews.com/toronto.com/content/tncms/assets/v3/editorial/6/5d/65d20fbb-9006-50b3-8ab9-8157f27f85c6/63dc14cec1ba1.image.jpg?resize=720%2C480" /> */}
-            <Avatar
-                style={{
-                    backgroundColor: '#12411B',
-                    color: '#F5FFBE',
+            {props.selectedVenue?.profile_pic_url ?
+                <img src={props.selectedVenue.profile_pic_url} alt={""} style={{
+                    width: '60px',
+                    height: '60px',
                     marginLeft: ".5em",
-                    minWidth: "60px",
-                    minHeight: "60px",
-                    maxWidth: "90px",
-                    maxHeight: "90px",
-                }}>{props.selectedVenue?.name.toUpperCase()[0]}
-            </Avatar>
+                    borderRadius: '50%',
+                    objectFit: 'cover'
+                }} />
+                :
+                <Avatar
+                    style={{
+                        backgroundColor: '#12411B',
+                        color: '#F5FFBE',
+                        marginLeft: ".5em",
+                        minWidth: "60px",
+                        minHeight: "60px",
+                        maxWidth: "90px",
+                        maxHeight: "90px",
+                    }}>{props.selectedVenue?.name.toUpperCase()[0]}
+                </Avatar>
+            }
             <div className='flex-col ml-5 h-max my-auto mx-full'>
                 <div className='flex flex-row'>
                     <p className='font-bold text-lg'>{props.selectedVenue?.name}</p>
                     <button className='border-none bg-transparent mb-2 mr-4' onClick={toggleSave}>
-                        {/* <Image
-                            src={saves[props.selectedVenue.id] ? filledHeart : heart}
-                            alt="Like Icon"
-                            width={22}
-                            height={22}
-                            style={{ marginLeft: ".5em", minWidth: "22px", minHeight: "22px", marginTop: '.1em' }}
-                        /> */}
                         {saves[props.selectedVenue.id] ? <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} /> : <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} />}
                     </button>
                 </div>
 
                 <p className='font-bold text-sm'>{props.selectedVenue?.location.address}</p>
-                {/* <p className='text-xs'>🥐☕️ Cafe Bakery</p> */}
             </div>
         </div>
     )
