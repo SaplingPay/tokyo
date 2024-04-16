@@ -1,4 +1,5 @@
 import { Modal } from 'antd'
+import Link from 'next/link'
 import React from 'react'
 
 type Props = {
@@ -19,10 +20,14 @@ const SignInModal = (props: Props) => {
         >
             <div className="text-center pb-2">
                 <p className="text-lg font-bold">Sign In to Your Account to Save Dishes</p>
-                <button className='bg-slate-200 px-14 rounded-full py-2 text-black mt-2 w-42 mb-2' onClick={() => props.setOpenModal(false)}>Sign In</button>
+                <Link href="/sign-in">
+                    <button className='bg-slate-200 px-14 rounded-full py-2 text-black mt-2 w-42 mb-2'>Sign In</button>
+                </Link>
 
                 <p>{`Don't have an account?`}</p>
-                <button className='bg-[#12411B] px-8 rounded-full py-2 text-white mt-2 w-42' onClick={() => props.setOpenModal(false)}>Create Account</button>
+                <Link href="/sign-up">
+                    <button className='bg-[#12411B] px-8 rounded-full py-2 text-white mt-2 w-42'>Create Account</button>
+                </Link>
             </div>
         </Modal>
     )

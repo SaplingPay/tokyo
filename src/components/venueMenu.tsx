@@ -1,7 +1,9 @@
 import { Tabs } from 'antd';
 import React, { use, useEffect, useState } from 'react'
-import { savedStore } from '@/app/store/state';
+import { savedStore, userStore } from '@/app/store/state';
 import { HeartOutlined, HeartTwoTone } from '@ant-design/icons';
+import { useUser } from '@clerk/nextjs';
+import { UpdateUser } from '@/app/actions';
 
 type Props = {
     menus: any[]
@@ -12,6 +14,8 @@ function VenueMenu(props: Props) {
     const [categories, setCategories] = useState<any>({})
     const [saves, setSaves] = useState<{ [key: string]: boolean }>({});
     const { savedMenuItems, saveMenuItem, removeMenuItem } = savedStore();
+    const { user: clerkUser } = useUser();
+    const { user, setUser } = userStore()
 
     useEffect(() => {
         setCategories({})
@@ -48,9 +52,36 @@ function VenueMenu(props: Props) {
         item.menu_id = menu_id;
 
         if (saves[item.id]) {
-            removeMenuItem(item);
+            if (clerkUser) {
+                const data = {
+                    id: user.id,
+                    data: {
+                        saves: user.saves.filter((s: any) => s.menu_item_id !== item.id)
+                    }
+                }
+                UpdateUser(data)
+
+            } else {
+                removeMenuItem(item);
+            }
         } else {
-            saveMenuItem(item);
+            if (clerkUser) {
+                const data = {
+                    id: user.id,
+                    data: {
+                        saves: [...user.saves, {
+                            type: 'menu_item',
+                            venue_id: venue_id,
+                            menu_id: menu_id,
+                            menu_item_id: item.id
+                        }]
+                    }
+                }
+                UpdateUser(data)
+            } else {
+                saveMenuItem(item);
+            }
+
         }
         setSaves(prev => ({
             ...prev,
