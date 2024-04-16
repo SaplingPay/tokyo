@@ -4,6 +4,7 @@ import { clsx } from 'clsx';
 import { useState } from 'react';
 import { Drawer } from 'vaul';
 import { DrawerContent, DrawerHeader, DrawerTitle } from './ui/drawer';
+import VenueIcon from './ui/venueIcon';
 
 const snapPoints = [.15, .45, .75];
 
@@ -30,17 +31,7 @@ const RecommendedDrawer = () => {
                     {allVenues?.map((item: any, i: number) => {
                         return (
                             <div className='flex mb-4' key={i}>
-                                <Avatar
-                                    style={{
-                                        backgroundColor: '#12411B',
-                                        color: '#F5FFBE',
-                                        marginLeft: ".5em",
-                                        minWidth: "60px",
-                                        minHeight: "60px",
-                                        maxWidth: "90px",
-                                        maxHeight: "90px",
-                                    }}>{item?.name.toUpperCase()[0]}
-                                </Avatar>
+                               <VenueIcon selectedVenue={{ name: item?.name }} />
                                 <div className='flex-col ml-5 h-max my-auto'>
                                     <p className='font-bold text-base'>{item.name}</p>
                                     <p className='text-xs'>{item.location.address}</p>

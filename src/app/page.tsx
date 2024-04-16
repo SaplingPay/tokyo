@@ -1,6 +1,7 @@
 'use client'
 import Map from "@/components/map"
 import Navbar from "@/components/navbar";
+import ProfileIcon from "@/components/profileIcon";
 import { useEffect } from "react";
 import { savedStore } from './store/state'
 
@@ -20,6 +21,7 @@ export default function Home() {
 
       <Map />
       <Navbar />
+      <ProfileIcon />
 
       <RestaurantViewDrawer />
       <RecommendedDrawer />

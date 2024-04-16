@@ -4,6 +4,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { GetVenues } from '@/app/actions';
 import { drawerStore, navStore, savedStore } from '@/app/store/state';
 import { Avatar } from 'antd';
+import VenueIcon from './ui/venueIcon';
 
 type Props = {
 }
