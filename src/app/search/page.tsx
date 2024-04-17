@@ -1,9 +1,8 @@
 'use client'
 import React, { useState } from 'react';
 import { Input, Button, Avatar, List } from 'antd';
-import { SearchOutlined, UserOutlined, CloseOutlined } from '@ant-design/icons';
+import { SearchOutlined, UserOutlined, LeftOutlined } from '@ant-design/icons';
 import { useRouter } from 'next/navigation';
-import { ArrowLeftIcon } from 'lucide-react';
 
 const Search = () => {
   const [searchValue, setSearchValue] = useState('');
@@ -31,11 +30,7 @@ const Search = () => {
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', padding: '16px' }}>
-      <Button 
-            icon={<ArrowLeftIcon />} 
-            onClick={() => router.back()} 
-            style={{ border: 'none', background: 'none' }}
-            />
+    <Button icon={<LeftOutlined />} onClick={() => router.back()} style={{ border: 'none', background: 'none' }} />
         <Input
           placeholder="Search for a user"
           prefix={<SearchOutlined />}

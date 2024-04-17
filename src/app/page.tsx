@@ -124,7 +124,7 @@ export default function Home() {
     <main>
 
       <SearchButton/>
-
+      <Map />
       <Navbar />
       <ProfileIcon />
 
