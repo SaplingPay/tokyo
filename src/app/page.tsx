@@ -2,6 +2,7 @@
 import Map from "@/components/map"
 import Navbar from "@/components/navbar";
 import ProfileIcon from "@/components/profileIcon";
+import SearchButton from "@/components/ui/searchButton";
 import { useEffect, useState } from "react";
 import { savedStore, userStore } from './store/state'
 
@@ -122,7 +123,8 @@ export default function Home() {
   return (
     <main>
 
-      <Map />
+      <SearchButton/>
+
       <Navbar />
       <ProfileIcon />
 
