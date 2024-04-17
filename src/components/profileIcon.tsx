@@ -18,7 +18,7 @@ const ProfileIcon = (props: Props) => {
 
   const goToProfile = () => {
     if (clerkUser) {
-      push('/profile');
+      push('/profile/' + clerkUser.id);
     } else {
       setOpenSignInModal(true);
     }
