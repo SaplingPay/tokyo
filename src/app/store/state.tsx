@@ -46,6 +46,7 @@ export const savedStore = create(
         allVenues: [],
         savedVenues: [],
         savedMenuItems: [],
+        storedSaves: [],
         saveVenue: (venue: any) => set((state: any) => ({
             savedVenues: [...state.savedVenues, venue]
         })),
@@ -60,6 +61,9 @@ export const savedStore = create(
         })),
         storeVenues: (venues: any) => set((state: any) => ({
             allVenues: venues
+        })),
+        storeSaves: (saves: any) => set((state: any) => ({
+            storedSaves: saves
         })),
     }), {
         name: 'saved-storage',

@@ -1,46 +1,82 @@
-import { Avatar } from 'antd'
+import { Avatar, Popconfirm } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { savedStore } from '@/app/store/state';
+import { savedStore, userStore } from '@/app/store/state';
 import { HeartOutlined, HeartTwoTone } from '@ant-design/icons';
+import { useUser } from '@clerk/nextjs';
+import { UpdateUser } from '@/app/actions';
 
 type Props = {
     selectedVenue: any
 }
 
 const VenueInfo = (props: Props) => {
-
-    const [saves, setSaves] = useState<{ [key: string]: boolean }>({});
-    const { saveVenue, removeVenue, savedVenues } = savedStore();
+    const { storedSaves, storeSaves } = savedStore();
+    const { user: clerkUser } = useUser();
+    const { user, setUser } = userStore()
 
     const toggleSave = () => {
-
-        if (saves[props.selectedVenue.id]) {
-            removeVenue(props.selectedVenue);
-        } else {
-            saveVenue(props.selectedVenue);
+        const vI = {
+            type: "venue",
+            venue_id: props.selectedVenue.id,
+            name: props.selectedVenue.name,
+            profile_pic_url: props.selectedVenue.profile_pic_url,
+            location: props.selectedVenue.location
         }
-        setSaves(prev => ({
-            ...prev,
-            [props.selectedVenue.id]: !prev[props.selectedVenue.id]
-        }));
-    };
 
-    useEffect(() => {
-
-        const saves = {} as { [key: string]: boolean };
-        savedVenues.forEach((venue: any) => {
-            if (venue.id === props.selectedVenue.id) {
-                saves[venue.id] = true;
+        if (clerkUser) {
+            if (storedSaves.find((s: any) => s.venue_id === props.selectedVenue.id)) {
+                const data = {
+                    id: user.id,
+                    data: {
+                        saves: user.saves.filter((s: any) => s.venue_id !== props.selectedVenue.id && s.type == "venue")
+                    }
+                }
+                UpdateUser(data)
+                    .then((res) => {
+                        // console.log('res', res)
+                        setUser(res)
+                        const storeS = storedSaves.filter((s: any) => s.venue_id !== props.selectedVenue.id && s.type == "venue")
+                        // console.log('storeS', storeS)
+                        storeSaves(storeS)
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                    })
             } else {
-                saves[venue.id] = false;
+                const updatedSaves = [...user.saves, {
+                    type: "venue",
+                    venue_id: props.selectedVenue.id
+                }]
+
+                const data = {
+                    id: user.id,
+                    data: {
+                        saves: updatedSaves
+                    }
+                }
+                UpdateUser(data)
+                    .then((res) => {
+                        // console.log('res', res)
+                        setUser(res)
+                        const storeS = [...storedSaves, vI]
+                        // console.log('storeS', storeS)
+                        storeSaves(storeS)
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                    })
             }
-        });
-        setSaves(saves);
 
-        return () => {
-
+        } else {
+            if (storedSaves.find((s: any) => s.venue_id === props.selectedVenue.id)) {
+                const storeS = storedSaves.filter((s: any) => s.venue_id !== props.selectedVenue.id && s.type == "venue")
+                storeSaves(storeS)
+            } else {
+                const storeS = [...storedSaves, vI]
+                storeSaves(storeS)
+            }
         }
-    }, [])
+    };
 
     return (
         <div className='flex'>
@@ -68,8 +104,14 @@ const VenueInfo = (props: Props) => {
             <div className='flex-col ml-5 h-max my-auto mx-full'>
                 <div className='flex flex-row'>
                     <p className='font-bold text-lg'>{props.selectedVenue?.name}</p>
-                    <button className='border-none bg-transparent mb-2 mr-4' onClick={toggleSave}>
-                        {saves[props.selectedVenue.id] ? <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} /> : <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} />}
+                    <button className='border-none bg-transparent mb-2 mr-4'>
+                        {storedSaves.find((s: any) => s.venue_id === props.selectedVenue.id && s.type == "venue") ?
+                            <Popconfirm title="This will also remove all saved items from this place" onConfirm={toggleSave} okText="Ok" cancelText="Cancel">
+                                <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} />
+                            </Popconfirm>
+                            :
+                            <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} onClick={toggleSave} />
+                        }
                     </button>
                 </div>
 

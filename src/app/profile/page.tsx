@@ -6,19 +6,26 @@ import React, { use, useEffect, useState } from 'react';
 import { SignOutButton, UserButton, useClerk, useUser } from '@clerk/nextjs';
 import { GetMenu, GetUser, GetVenue } from '../actions';
 import VenueIcon from '@/components/ui/venueIcon';
-import { savedStore } from '../store/state';
+import { savedStore, userStore } from '../store/state';
 import { useRouter } from 'next/navigation';
 
 const ProfilePage = () => {
   const { user: clerkUser } = useUser();
-  const [user, setUser] = useState<any>({});
+  const { user, setUser } = userStore()
   const { signOut } = useClerk();
   const router = useRouter()
 
   const [section, setSection] = useState('restaurants')
-  const [saves, setSaves] = useState<any>([])
+  const { storedSaves, allVenues, storeSaves } = savedStore();
+
+  const [loading, setLoading] = useState(true)
 
   const getSaves = (userSaves: any[]) => {
+    console.log('userSaves', userSaves)
+    console.log('storedSaves', storedSaves)
+
+    const sTemp = [] as any[]
+
     for (let i = 0; i < userSaves.length; i++) {
 
       GetVenue(userSaves[i].venue_id)
@@ -38,7 +45,11 @@ const ProfilePage = () => {
                   profile_pic_url: res.profile_pic_url,
                   location: res.location
                 }
-                setSaves((prev: any) => [...prev, s])
+                console.log(s.name)
+                const storeS = [...sTemp, s]
+                sTemp.push(s)
+
+                storeSaves(storeS)
               })
 
           } else if (userSaves[i].type == 'venue') {
@@ -49,7 +60,15 @@ const ProfilePage = () => {
               profile_pic_url: res.profile_pic_url,
               location: res.location
             }
-            setSaves((prev: any) => [...prev, s])
+            const storeS = [...sTemp, s]
+            sTemp.push(s)
+
+            storeSaves(storeS)
+          }
+
+          if (i === userSaves.length - 1) {
+            console.log('done')
+            setLoading(false)
           }
         })
     }
@@ -63,8 +82,16 @@ const ProfilePage = () => {
       GetUser(clerkUser.id)
         .then((res) => {
           console.log(res)
+          // Save user data
           setUser(res)
-          getSaves(res.saves)
+
+          storeSaves([])
+          // Save user saves
+          if (res.saves && res.saves.length > 0) {
+            getSaves(res.saves)
+          } else {
+            setLoading(false)
+          }
         })
         .catch((err) => {
           console.error(err)
@@ -72,7 +99,14 @@ const ProfilePage = () => {
     }
   }, [clerkUser])
 
-  return (user && clerkUser ?
+  const signout = () => {
+    storeSaves([])
+    setUser({})
+    signOut(() => router.push('/'))
+    router.refresh()
+  }
+
+  return (user && clerkUser && !loading ?
     <div className="bg-white h-screen overflow-y-scroll p-4">
       <div className="flex justify-between items-center mb-2">
         <Link href="/">
@@ -81,7 +115,7 @@ const ProfilePage = () => {
         {/* <SettingOutlined className="text-xl" /> */}
         {/* <UserButton /> */}
         {/* <TODO : dropdown? */}
-        <button onClick={() => signOut(() => router.push("/"))}>
+        <button onClick={signout}>
           Sign out
         </button>
       </div>
@@ -115,7 +149,7 @@ const ProfilePage = () => {
       <div className='mt-4 mx-4 overflow-y-scroll'>
         {section === 'restaurants' && (
           <div className='mt-2'>
-            {saves.filter((s: any) => s.type == "venue")?.map((item: any, i: number) => {
+            {storedSaves?.filter((s: any) => s.type == "venue")?.map((item: any, i: number) => {
               return (
                 <div className='flex mb-6 w-full' key={i}>
                   <VenueIcon selectedVenue={{ image: item.profile_pic_url, name: item?.name }} />
@@ -124,11 +158,8 @@ const ProfilePage = () => {
                     <div className='flex justify-between'>
                       <p className='text-xs'>{item.location.address}</p>
                       <span className='ml-auto py-1 -mt-2  px-1.5 border-solid border-slate-200 text-black border-2 h-max  rounded-full text-xs bg-slate-100'>
-                        {saves?.filter((s: any) => s.type == "menu_item" && s.venue_id == item.venue_id).length} 💚
+                        {storedSaves?.filter((s: any) => s.type == "menu_item" && s.venue_id == item.venue_id).length} 💚
                       </span>
-                      {/* <span className='ml-auto -mt-2 py-1 px-1.5  h-max text-base border-b-2 border-[#12411B] text-[#12411B]'>
-                        {saves?.filter((s: any) => s.type == "menu_item" && s.venue_id == item.venue_id).length} 💚
-                      </span> */}
                     </div>
                   </div>
                 </div>
@@ -138,7 +169,7 @@ const ProfilePage = () => {
         )}
         {section === 'dishes' && (
           <div className='mt-2'>
-            {saves?.filter((s: any) => s.type == "menu_item")?.map((item: any, i: number) => {
+            {storedSaves?.filter((s: any) => s.type == "menu_item")?.map((item: any, i: number) => {
               return (
                 <div className='flex mb-6 w-full' key={i} >
                   <VenueIcon selectedVenue={{ image: item?.profile_pic_url, name: item?.name }} />
@@ -154,7 +185,9 @@ const ProfilePage = () => {
       </div>
 
     </div>
-    : <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}><Spin /></div>);
+    : <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}><Spin /></div>
+
+  );
 };
 
 export default ProfilePage;
