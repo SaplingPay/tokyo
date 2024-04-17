@@ -34,23 +34,19 @@ export const drawerStore = create((set: any) => ({
     }
 }));
 
-export const userStore = create(
-    persist((set: any) => ({
-        user: null,
-        setUser: (user: any) => set((state: any) => ({
-            user: user
-        })),
-    }), {
-        name: 'user-storage',
-        skipHydration: true
-    } as PersistOptions<any>)
-);
+export const userStore = create((set: any) => ({
+    user: {} as any,
+    setUser: (user: any) => set((state: any) => ({
+        user: user
+    })),
+}));
 
 export const savedStore = create(
     persist((set: any) => ({
         allVenues: [],
         savedVenues: [],
         savedMenuItems: [],
+        storedSaves: [],
         saveVenue: (venue: any) => set((state: any) => ({
             savedVenues: [...state.savedVenues, venue]
         })),
@@ -65,6 +61,9 @@ export const savedStore = create(
         })),
         storeVenues: (venues: any) => set((state: any) => ({
             allVenues: venues
+        })),
+        storeSaves: (saves: any) => set((state: any) => ({
+            storedSaves: saves
         })),
     }), {
         name: 'saved-storage',

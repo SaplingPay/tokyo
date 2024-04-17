@@ -12,18 +12,16 @@ type Props = {
 function VenueMenu(props: Props) {
 
     const [categories, setCategories] = useState<any>({})
-    const { storedSaves, allVenues, storeSaves } = savedStore();
+    const [saves, setSaves] = useState<{ [key: string]: boolean }>({});
+    const { savedMenuItems, saveMenuItem, removeMenuItem } = savedStore();
     const { user: clerkUser } = useUser();
     const { user, setUser } = userStore()
 
     useEffect(() => {
-        console.log('VENUE MENU - storedSaves', storedSaves)
         setCategories({})
 
         for (let i = 0; i < props.menus.length; i++) {
             const menu = props.menus[i];
-            console.log('menu', menu)
-            console.log('venues', allVenues)
             const c = menu?.items?.map((item: any) => item.categories[0])
             const catSet = new Set(c)
             const data = {
@@ -31,6 +29,17 @@ function VenueMenu(props: Props) {
                 [menu.id]: Array.from(catSet)
             }
             setCategories(data)
+            const s = {
+                ...saves
+            } as { [key: string]: boolean };
+            menu?.items?.forEach((item: any) => {
+                if (savedMenuItems.find((mI: any) => mI.id === item.id)) {
+                    s[item.id] = true;
+                } else {
+                    s[item.id] = false;
+                }
+            });
+            setSaves(s);
         }
 
         return () => {
@@ -39,113 +48,54 @@ function VenueMenu(props: Props) {
     }, [props.menus])
 
     const toggleSave = (item: any, venue_id: string, menu_id: string) => {
-        item.venue_id = item.venue_id || venue_id;
-        item.menu_id = item.menu_id || menu_id;
-        item.id = item.id || item.menu_item_id;
+        item.venue_id = venue_id;
+        item.menu_id = menu_id;
 
-        const sI = {
-            type: 'menu_item',
-            venue_id: item.venue_id,
-            menu_id: item.menu_id,
-            menu_item_id: item.id,
-            name: item.name,
-            venue_name: allVenues.find((v: any) => v.id === venue_id).name,
-            profile_pic_url: allVenues.find((v: any) => v.id === venue_id).profile_pic_url,
-            location: allVenues.find((v: any) => v.id === venue_id).location
-        }
-        console.log('sI', sI)
-
-        const vI = {
-            type: 'venue',
-            venue_id: item.venue_id,
-            name: allVenues.find((v: any) => v.id === venue_id).name,
-            profile_pic_url: allVenues.find((v: any) => v.id === venue_id).profile_pic_url,
-            location: allVenues.find((v: any) => v.id === venue_id).location
-        }
-        console.log('vI', vI)
-
-        if (clerkUser) {
-            if (storedSaves.find((s: any) => s.menu_item_id === item.id)) {
-                const updatedSaves = user.saves.filter((s: any) => s.menu_item_id !== item.id)
-
+        if (saves[item.id]) {
+            if (clerkUser) {
                 const data = {
                     id: user.id,
                     data: {
-                        saves: updatedSaves
+                        saves: user.saves.filter((s: any) => s.menu_item_id !== item.id)
                     }
                 }
-                console.log('data', data)
                 UpdateUser(data)
-                    .then((res) => {
-                        setUser(res)
-                        const storeS = storedSaves.filter((s: any) => s.menu_item_id !== item.id)
-                        storeSaves(storeS)
-                    })
-                    .catch((err) => {
-                        console.error(err)
-                    })
+
             } else {
-                const updatedSaves = [...user.saves, {
-                    type: 'menu_item',
-                    venue_id: venue_id,
-                    menu_id: menu_id,
-                    menu_item_id: item.id
-                }]
-
-                if (!storedSaves.find((s: any) => s.venue_id === venue_id)) {
-                    updatedSaves.push({
-                        type: 'venue',
-                        venue_id: venue_id
-                    })
-                }
-
-                const data = {
-                    id: user.id,
-                    data: {
-                        saves: updatedSaves
-                    }
-                }
-
-                UpdateUser(data)
-                    .then((res) => {
-                        setUser(res)
-                        const storeS = [...storedSaves, sI]
-                        if (!storedSaves.find((s: any) => s.venue_id === venue_id)) {
-                            storeS.push(vI)
-                        }
-                        console.log('storeS', storeS)
-                        console.log('res', res)
-                        storeSaves(storeS)
-                    })
-                    .catch((err) => {
-                        console.error(err)
-                    })
+                removeMenuItem(item);
             }
-
-
         } else {
-            // Not logged in
-            if (storedSaves.find((s: any) => s.menu_item_id === item.id)) {
-                const storeS = storedSaves.filter((s: any) => s.menu_item_id !== item.id)
-                storeSaves(storeS)
-            } else {
-                const storeS = [...storedSaves, sI]
-                if (!storedSaves.find((s: any) => s.venue_id === venue_id)) {
-                    storeS.push(vI)
+            if (clerkUser) {
+                const data = {
+                    id: user.id,
+                    data: {
+                        saves: [...user.saves, {
+                            type: 'menu_item',
+                            venue_id: venue_id,
+                            menu_id: menu_id,
+                            menu_item_id: item.id
+                        }]
+                    }
                 }
-                storeSaves(storeS)
+                UpdateUser(data)
+            } else {
+                saveMenuItem(item);
             }
 
         }
+        setSaves(prev => ({
+            ...prev,
+            [item.id]: !prev[item.id]
+        }));
     };
 
     return (
         props.menus.length === 1 ? (
             <Tabs style={{ marginRight: '1em' }}>
-                {storedSaves?.filter((s: any) => s.type === "menu_item" && s.venue_id === props.menus[0].venue_id).length > 0 && (
+                {savedMenuItems?.filter((item: any) => item.venue_id === props.menus[0].venue_id).length > 0 && (
                     <Tabs.TabPane key='0' tab='Saved'>
                         <div className='px-2 py-4 overflow-y-scroll h-80 mb-4'>
-                            {storedSaves?.filter((s: any) => (s.type === "menu_item" && s.venue_id === props.menus[0].venue_id)).map((item: any, i: number) => {
+                            {savedMenuItems?.filter((item: any) => (item.venue_id === props.menus[0].venue_id && item.menu_id === props.menus[0].id)).map((item: any, i: number) => {
                                 return (
                                     <div className='flex mb-6' key={i}>
                                         <p className='text-base'>{item.name}</p>
@@ -155,17 +105,17 @@ function VenueMenu(props: Props) {
                                                     ${item.price.toFixed(2)}
                                                 </span>
                                             )}
-                                            <button className='border-none bg-transparent' onClick={() => toggleSave(item, item.venue_id, item.menu_id)}>
-                                                <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} />
+                                            <button className='border-none bg-transparent' onClick={() => toggleSave(item, props.menus[0].venue_id, props.menus[0].id)}>
+                                                {saves[item.id] ? <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} /> : <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} />}
                                             </button>
                                         </div>
                                     </div>
                                 )
-                            })}
+                            }
+                            )}
                         </div>
                     </Tabs.TabPane>
-                )
-                }
+                )}
                 {categories[props.menus[0].id]?.map((cat: any, i: number) => {
                     const id = String(i + 1);
                     return (
@@ -182,7 +132,7 @@ function VenueMenu(props: Props) {
                                                     </span>
                                                 )}
                                                 <button className='border-none bg-transparent' onClick={() => toggleSave(item, props.menus[0].venue_id, props.menus[0].id)}>
-                                                    {storedSaves?.find((s: any) => s.menu_item_id === item.id) ? <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} /> : <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} />}
+                                                    {saves[item.id] ? <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} /> : <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} />}
                                                 </button>
                                             </div>
                                         </div>
@@ -203,10 +153,10 @@ function VenueMenu(props: Props) {
                         return (
                             <Tabs.TabPane key={index} tab={menu.name} >
                                 <Tabs>
-                                    {storedSaves?.filter((s: any) => s.type === "menu_item" && s.venue_id === menu.venue_id && s.menu_id === menu.id).length > 0 && (
+                                    {savedMenuItems?.filter((item: any) => (item.venue_id === menu.venue_id && item.menu_id === menu.id)).length > 0 && (
                                         <Tabs.TabPane key='0' tab='Saved'>
                                             <div className='px-2 py-4 overflow-y-scroll h-80 mb-4'>
-                                                {storedSaves?.filter((s: any) => (s.type === "menu_item" && s.venue_id === menu.venue_id && s.menu_id === menu.id)).map((item: any, i: number) => {
+                                                {savedMenuItems?.filter((item: any) => (item.venue_id === menu.venue_id && item.menu_id === menu.id)).map((item: any, i: number) => {
                                                     return (
                                                         <div className='flex mb-6' key={i}>
                                                             <p className='text-base'>{item.name}</p>
@@ -217,7 +167,7 @@ function VenueMenu(props: Props) {
                                                                     </span>
                                                                 )}
                                                                 <button className='border-none bg-transparent' onClick={() => toggleSave(item, menu.venue_id, menu.id)}>
-                                                                    <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} />
+                                                                    {saves[item.id] ? <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} /> : <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} />}
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -243,7 +193,7 @@ function VenueMenu(props: Props) {
                                                                         </span>
                                                                     )}
                                                                     <button className='border-none bg-transparent' onClick={() => toggleSave(item, menu.venue_id, menu.id)}>
-                                                                        {storedSaves?.find((s: any) => s.menu_item_id === item.id) ? <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} /> : <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} />}
+                                                                        {saves[item.id] ? <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} /> : <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} />}
                                                                     </button>
                                                                 </div>
                                                             </div>
