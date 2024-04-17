@@ -1,17 +1,18 @@
 'use client'
-import { Avatar, Dropdown, MenuProps, Modal, Spin, Tabs, Tag } from 'antd';
+import { Avatar, Button, Dropdown, MenuProps, Modal, Spin, Tabs, Tag } from 'antd';
 import { UserOutlined, HeartOutlined, SettingOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import React, { use, useEffect, useState } from 'react';
 import { SignOutButton, UserButton, useClerk, useUser } from '@clerk/nextjs';
-import { GetMenu, GetUser, GetVenue } from '../actions';
+import { GetMenu, GetUser, GetVenue } from '../../actions';
 import VenueIcon from '@/components/ui/venueIcon';
-import { savedStore, userStore } from '../store/state';
+import { savedStore, userStore } from '../../store/state';
 import { useRouter } from 'next/navigation';
 
-const ProfilePage = () => {
+const ProfilePage = ({ params }: any) => {
+  console.log(params)
   const { user: clerkUser } = useUser();
-  const { user, setUser } = userStore()
+  const { user: loggedInUser, setUser: setLoggedInUser } = userStore()
   const { signOut } = useClerk();
   const router = useRouter()
 
@@ -19,6 +20,8 @@ const ProfilePage = () => {
   const { storedSaves, allVenues, storeSaves } = savedStore();
 
   const [loading, setLoading] = useState(true)
+
+  const [profileUser, setProfileUser] = useState({} as any)
 
   const getSaves = (userSaves: any[]) => {
     console.log('userSaves', userSaves)
@@ -77,37 +80,28 @@ const ProfilePage = () => {
 
   // TODO: Error handling
   useEffect(() => {
-    console.log(clerkUser);
-    if (clerkUser) {
-      GetUser(clerkUser.id)
-        .then((res) => {
-          console.log(res)
-          // Save user data
-          setUser(res)
+    GetUser(params.profile_id)
+      .then((res) => {
+        console.log(res)
+        // Save user data
+        setProfileUser(res)
 
-          storeSaves([])
-          // Save user saves
-          if (res.saves && res.saves.length > 0) {
-            getSaves(res.saves)
-          } else {
-            setLoading(false)
-          }
-        })
-        .catch((err) => {
-          console.error(err)
-        })
-    } else {
-      console.log('no user', clerkUser)
-      // timer after 5 seconds go home
-      setTimeout(() => {
-        router.push('/')
-      }, 5000)
-    }
-  }, [clerkUser])
+        storeSaves([])
+        // Save user saves
+        if (res.saves && res.saves.length > 0) {
+          getSaves(res.saves)
+        } else {
+          setLoading(false)
+        }
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+  }, [params.profile_id])
 
   const signout = () => {
     storeSaves([])
-    setUser({})
+    setLoggedInUser({})
     signOut(() => router.push('/'))
     router.refresh()
   }
@@ -124,7 +118,7 @@ const ProfilePage = () => {
   ];
 
 
-  return (user && clerkUser && !loading ?
+  return (
     <div className="bg-white h-screen overflow-y-scroll p-4">
       <div className="flex justify-between items-center mb-2">
         <Link href="/">
@@ -136,13 +130,26 @@ const ProfilePage = () => {
         </Dropdown>
       </div>
       <div className="text-center mb-5">
-        <Avatar size={64} src={user.profile_pic_url} />
-        <h1 className="text-xl font-bold mt-2 mb-0">{user?.display_name}</h1>
-        <p className="text-gray-600">@{user?.username}</p>
+        <Avatar size={64} src={profileUser.profile_pic_url} />
+        <h1 className="text-xl font-bold mt-2 mb-0">{profileUser?.display_name}</h1>
+        <p className="text-gray-600">@{profileUser?.username}</p>
         <p className="text-gray-600">📍 Amsterdam, NL</p>
         <div className="flex justify-center gap-4 my-2">
-          <span>{user?.followers?.length} followers</span> | <span>{user?.following?.length}  following</span>
+          <span>{profileUser?.followers?.length} followers</span> | <span>{profileUser?.following?.length}  following</span>
         </div>
+
+        {profileUser?.id === loggedInUser?.id ? (
+          // <button className="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded w-[80%]">
+          //   Edit Profile
+          // </button>
+          ""
+        )
+          : (
+            <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-[80%]">
+              Follow
+            </button>
+          )
+        }
       </div>
       <div className="flex justify-around mt-4 mb-4">
         <button className="font-semibold text-gray-800">Saves 💚</button>
@@ -165,7 +172,7 @@ const ProfilePage = () => {
       <div className='mt-4 mx-4 overflow-y-scroll'>
         {section === 'restaurants' && (
           <div className='mt-2'>
-            {storedSaves?.filter((s: any) => s.type == "venue")?.map((item: any, i: number) => {
+            {!loading && storedSaves?.filter((s: any) => s.type == "venue")?.map((item: any, i: number) => {
               return (
                 <div className='flex mb-6 w-full' key={i}>
                   <VenueIcon selectedVenue={{ image: item.profile_pic_url, name: item?.name }} />
@@ -185,7 +192,7 @@ const ProfilePage = () => {
         )}
         {section === 'dishes' && (
           <div className='mt-2'>
-            {storedSaves?.filter((s: any) => s.type == "menu_item")?.map((item: any, i: number) => {
+            {!loading && storedSaves?.filter((s: any) => s.type == "menu_item")?.map((item: any, i: number) => {
               return (
                 <div className='flex mb-6 w-full' key={i} >
                   <VenueIcon selectedVenue={{ image: item?.profile_pic_url, name: item?.name }} />
@@ -201,7 +208,6 @@ const ProfilePage = () => {
       </div>
 
     </div>
-    : <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}><Spin /></div>
 
   );
 };
