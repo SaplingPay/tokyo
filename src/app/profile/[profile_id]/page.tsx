@@ -139,7 +139,7 @@ const ProfilePage = ({ params }: any) => {
     console.log('follow')
     console.log(loggedInUser)
     console.log(profileUser)
-    if (loggedInUser.id === profileUser.id || profileUser.followers.includes(loggedInUser.id)) return
+    if (!loggedInUser.id || loggedInUser.id === profileUser.id || profileUser.followers.includes(loggedInUser.id)) return
     FollowUser({ userId: loggedInUser.id, followId: profileUser.id })
       .then((res) => {
         console.log(res)
@@ -167,9 +167,12 @@ const ProfilePage = ({ params }: any) => {
           <ArrowLeftOutlined />
         </Link>
         {/* <UserButton /> */}
-        <Dropdown menu={{ items }}>
-          <SettingOutlined />
-        </Dropdown>
+        {loggedInUser?.id === profileUser?.id &&
+          <Dropdown menu={{ items }}>
+            <SettingOutlined />
+          </Dropdown>
+        }
+
       </div>
       <div className="text-center mb-5">
         <Avatar size={64} src={profileUser.profile_pic_url} />
