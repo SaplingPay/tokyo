@@ -1,5 +1,5 @@
 'use client'
-import { Avatar, Modal, Spin, Tabs, Tag } from 'antd';
+import { Avatar, Dropdown, MenuProps, Modal, Spin, Tabs, Tag } from 'antd';
 import { UserOutlined, HeartOutlined, SettingOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import React, { use, useEffect, useState } from 'react';
@@ -96,6 +96,12 @@ const ProfilePage = () => {
         .catch((err) => {
           console.error(err)
         })
+    } else {
+      console.log('no user', clerkUser)
+      // timer after 5 seconds go home
+      setTimeout(() => {
+        router.push('/')
+      }, 5000)
     }
   }, [clerkUser])
 
@@ -106,18 +112,28 @@ const ProfilePage = () => {
     router.refresh()
   }
 
+  const items: MenuProps['items'] = [
+    {
+      key: '1',
+      label: (
+        <button onClick={signout}>
+          Sign out
+        </button>
+      ),
+    },
+  ];
+
+
   return (user && clerkUser && !loading ?
     <div className="bg-white h-screen overflow-y-scroll p-4">
       <div className="flex justify-between items-center mb-2">
         <Link href="/">
           <ArrowLeftOutlined />
         </Link>
-        {/* <SettingOutlined className="text-xl" /> */}
         {/* <UserButton /> */}
-        {/* <TODO : dropdown? */}
-        <button onClick={signout}>
-          Sign out
-        </button>
+        <Dropdown menu={{ items }}>
+          <SettingOutlined />
+        </Dropdown>
       </div>
       <div className="text-center mb-5">
         <Avatar size={64} src={user.profile_pic_url} />
