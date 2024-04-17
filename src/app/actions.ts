@@ -298,3 +298,86 @@ export async function UpdateUser(data: { id: string; data: any }) {
     return { error: errorMessage };
   }
 }
+
+export async function GetUsers() {
+  console.log("GetUsers");
+  try {
+    console.log("serverUrl", serverUrl);
+    const token = await (
+      await axios.post(serverUrl + "/getToken", {})
+    ).data.token;
+
+    const response = await axios.get(serverUrl + "/usersV2", {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}
+
+export async function FollowUser({ userId, followId }: any) {
+  console.log("FollowUser");
+  try {
+    console.log("serverUrl", serverUrl);
+    const token = await (
+      await axios.post(serverUrl + "/getToken", {})
+    ).data.token;
+
+    const response = await axios.put(
+      serverUrl + `/usersV2/${userId}/follow/${followId}`,
+      {},
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    );
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}
+
+export async function UnfollowUser({ userId, followId }: any) {
+  console.log("UnfollowUser");
+  try {
+    console.log("serverUrl", serverUrl);
+    const token = await (
+      await axios.post(serverUrl + "/getToken", {})
+    ).data.token;
+
+    const response = await axios.put(
+      serverUrl + `/usersV2/${userId}/unfollow/${followId}`,
+      {},
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    );
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}

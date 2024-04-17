@@ -4,13 +4,13 @@ import { UserOutlined, HeartOutlined, SettingOutlined, ArrowLeftOutlined } from 
 import Link from 'next/link';
 import React, { use, useEffect, useState } from 'react';
 import { SignOutButton, UserButton, useClerk, useUser } from '@clerk/nextjs';
-import { GetMenu, GetUser, GetVenue } from '../../actions';
+import { FollowUser, GetMenu, GetUser, GetVenue, UnfollowUser } from '../../actions';
 import VenueIcon from '@/components/ui/venueIcon';
 import { savedStore, userStore } from '../../store/state';
 import { useRouter } from 'next/navigation';
 
 const ProfilePage = ({ params }: any) => {
-  console.log(params)
+  // console.log(params)
   const { user: clerkUser } = useUser();
   const { user: loggedInUser, setUser: setLoggedInUser } = userStore()
   const { signOut } = useClerk();
@@ -48,7 +48,7 @@ const ProfilePage = ({ params }: any) => {
                   profile_pic_url: res.profile_pic_url,
                   location: res.location
                 }
-                console.log(s.name)
+                // console.log(s.name)
                 const storeS = [...sTemp, s]
                 sTemp.push(s)
 
@@ -76,6 +76,24 @@ const ProfilePage = ({ params }: any) => {
         })
     }
   }
+
+  useEffect(() => {
+    console.log("clerkUser", clerkUser)
+
+    // Load user data
+    if (clerkUser) {
+      GetUser(clerkUser.id)
+        .then((res) => {
+          console.log(res)
+          setLoggedInUser(res)
+
+        })
+        .catch((err) => {
+          console.error(err)
+        })
+    }
+
+  }, [clerkUser])
 
 
   // TODO: Error handling
@@ -117,6 +135,30 @@ const ProfilePage = ({ params }: any) => {
     },
   ];
 
+  const followUser = () => {
+    console.log('follow')
+    console.log(loggedInUser)
+    console.log(profileUser)
+    if (loggedInUser.id === profileUser.id || profileUser.followers.includes(loggedInUser.id)) return
+    FollowUser({ userId: loggedInUser.id, followId: profileUser.id })
+      .then((res) => {
+        console.log(res)
+        setProfileUser(res)
+      })
+  }
+
+  const unfollowUser = () => {
+    console.log('unfollow')
+    console.log(loggedInUser)
+    console.log(profileUser)
+    if (loggedInUser.id === profileUser.id || !profileUser.followers.includes(loggedInUser.id)) return
+    UnfollowUser({ userId: loggedInUser.id, followId: profileUser.id })
+      .then((res) => {
+        console.log(res)
+        setProfileUser(res)
+      })
+  }
+
 
   return (
     <div className="bg-white h-screen overflow-y-scroll p-4">
@@ -145,9 +187,15 @@ const ProfilePage = ({ params }: any) => {
           ""
         )
           : (
-            <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-[80%]">
-              Follow
-            </button>
+            profileUser?.followers?.includes(loggedInUser?.id) ? (
+              <button className="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded w-[80%]" onClick={unfollowUser}>
+                Unfollow
+              </button>
+            ) : (
+              <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-[80%]" onClick={followUser}>
+                Follow
+              </button>
+            )
           )
         }
       </div>
