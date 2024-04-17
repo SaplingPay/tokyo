@@ -86,7 +86,7 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
-    console.log(clerkUser)
+    console.log("clerkUser", clerkUser)
 
     // Load user data
     if (clerkUser) {
@@ -95,17 +95,17 @@ export default function Home() {
           console.log(res)
           if (res.error == 'user not found') {
             push('/register')
+          } else {
+            // Save user data
+            setUser(res)
+
+            storeSaves([])
+            // Save user saves
+            if (res.saves && res.saves.length > 0) {
+              getSaves(res.saves)
+            }
+
           }
-
-          // Save user data
-          setUser(res)
-
-          storeSaves([])
-          // Save user saves
-          if (res.saves && res.saves.length > 0) {
-            getSaves(res.saves)
-          }
-
 
         })
         .catch((err) => {
@@ -115,6 +115,8 @@ export default function Home() {
       // Not logged in
       savedStore.persist.rehydrate()
     }
+    console.log('storedSaves', storedSaves)
+
   }, [clerkUser])
 
   return (

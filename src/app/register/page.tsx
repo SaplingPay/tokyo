@@ -1,10 +1,8 @@
 'use client'
-import { PlusOutlined, UserOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { useUser } from '@clerk/nextjs';
 import { Form, Input, Upload } from 'antd';
-import { User } from 'lucide-react';
 import Head from 'next/head';
-import Image from 'next/image';
 import { useEffect } from 'react';
 import { CreateUser, UpdateUser } from '../actions';
 import { computeSHA256 } from '@/lib/utils';
@@ -16,7 +14,11 @@ const RegisterPage = () => {
     const { user } = useUser();
     const [form] = Form.useForm();
     const { push } = useRouter();
-    const { savedVenues, savedMenuItems } = savedStore();
+    const { storedSaves } = savedStore();
+
+    useEffect(() => {
+        savedStore.persist.rehydrate()
+    }, []);
 
     useEffect(() => {
         console.log(user);
@@ -45,20 +47,20 @@ const RegisterPage = () => {
 
     const handleCreateAccount = (value: any) => {
         const values = form.getFieldsValue();
-        console.log(values);
-        const savedV = savedVenues.map((venue: any) => {
+
+        const savedV = storedSaves.filter((s: any) => s.type === 'venue').map((venue: any) => {
             return {
                 type: "venue",
-                venue_id: venue.id
+                venue_id: venue.venue_id
             }
         })
 
-        const savedMI = savedMenuItems.map((menuItem: any) => {
+        const savedMI = storedSaves.filter((s: any) => s.type === 'menu_item').map((menuItem: any) => {
             return {
                 type: "menu_item",
                 venue_id: menuItem.venue_id,
                 menu_id: menuItem.menu_id,
-                menu_item_id: menuItem.id
+                menu_item_id: menuItem.menu_item_id
             }
         })
 
@@ -130,8 +132,6 @@ const RegisterPage = () => {
         </button>)
     }
 
-    console.log(form.getFieldValue('upload'))
-
     return (
         <>
             <Head>
@@ -146,7 +146,7 @@ const RegisterPage = () => {
                             name="upload"
                             valuePropName="fileList"
                             getValueFromEvent={normFile}
-                            // rules={[{ required: true, message: 'Please upload a picture' }]}
+                            rules={[{ required: true, message: 'Please upload a picture' }]}
                             style={{ display: "flex", justifyContent: "center" }}
                         >
                             <Upload
@@ -157,9 +157,6 @@ const RegisterPage = () => {
                                         onSuccess("ok", undefined);
                                     }
                                 }, 0)}>
-                                {/* <div className="bg-[#12411B] p-10 rounded-full">
-                                    <User color='white' />
-                                </div> */}
                                 {form.getFieldValue('upload')?.length > 0 ? "" : <UploadButton />}
                             </Upload>
                         </Form.Item>
@@ -196,7 +193,7 @@ const RegisterPage = () => {
                         </Form.Item> */}
                         <Form.Item>
                             <button
-                                className="w-full px-6 py-4 bg-black text-white text-base font-semibold rounded-full"
+                                className="w-full px-6 py-4 bg-[#12411B] text-white text-base font-semibold rounded-full"
                                 type="submit"
                             >
                                 Create Account
