@@ -4,7 +4,7 @@ import { UserOutlined, HeartOutlined, SettingOutlined, ArrowLeftOutlined } from 
 import Link from 'next/link';
 import React, { use, useEffect, useState } from 'react';
 import { SignOutButton, UserButton, useClerk, useUser } from '@clerk/nextjs';
-import { FollowUser, GetMenu, GetUser, GetVenue, UnfollowUser } from '../../actions';
+import { FollowUser, GetMenu, GetUser, GetUserSaves, GetVenue, UnfollowUser } from '../../actions';
 import VenueIcon from '@/components/ui/venueIcon';
 import { savedStore, userStore } from '../../store/state';
 import { useRouter } from 'next/navigation';
@@ -23,68 +23,15 @@ const ProfilePage = ({ params }: any) => {
 
   const [profileUser, setProfileUser] = useState({} as any)
 
-  const getSaves = (userSaves: any[]) => {
-    console.log('userSaves', userSaves)
-    console.log('storedSaves', storedSaves)
-
-    const sTemp = [] as any[]
-
-    for (let i = 0; i < userSaves.length; i++) {
-
-      GetVenue(userSaves[i].venue_id)
-        .then((res) => {
-          if (userSaves[i].type == 'menu_item') {
-            GetMenu(userSaves[i].venue_id, userSaves[i].menu_id)
-              .then((r: any) => {
-                const sItem = r.items.filter((it: any) => userSaves[i].menu_item_id === it.id)[0]
-
-                const s = {
-                  type: 'menu_item',
-                  venue_id: userSaves[i].venue_id,
-                  menu_id: userSaves[i].menu_id,
-                  menu_item_id: userSaves[i].menu_item_id,
-                  name: sItem.name,
-                  venue_name: res.name,
-                  profile_pic_url: res.profile_pic_url,
-                  location: res.location
-                }
-                // console.log(s.name)
-                const storeS = [...sTemp, s]
-                sTemp.push(s)
-
-                storeSaves(storeS)
-              })
-
-          } else if (userSaves[i].type == 'venue') {
-            const s = {
-              type: 'venue',
-              venue_id: res.id,
-              name: res.name,
-              profile_pic_url: res.profile_pic_url,
-              location: res.location
-            }
-            const storeS = [...sTemp, s]
-            sTemp.push(s)
-
-            storeSaves(storeS)
-          }
-
-          if (i === userSaves.length - 1) {
-            console.log('done')
-            setLoading(false)
-          }
-        })
-    }
-  }
 
   useEffect(() => {
-    console.log("clerkUser", clerkUser)
+    // console.log("clerkUser", clerkUser)
 
     // Load user data
     if (clerkUser) {
       GetUser(clerkUser.id)
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           setLoggedInUser(res)
 
         })
@@ -100,14 +47,19 @@ const ProfilePage = ({ params }: any) => {
   useEffect(() => {
     GetUser(params.profile_id)
       .then((res) => {
-        console.log(res)
+        // console.log(res)
         // Save user data
         setProfileUser(res)
 
         storeSaves([])
         // Save user saves
         if (res.saves && res.saves.length > 0) {
-          getSaves(res.saves)
+          GetUserSaves(res.id)
+            .then((res) => {
+              // console.log(res)
+              storeSaves(res)
+              setLoading(false)
+            })
         } else {
           setLoading(false)
         }
@@ -136,25 +88,25 @@ const ProfilePage = ({ params }: any) => {
   ];
 
   const followUser = () => {
-    console.log('follow')
-    console.log(loggedInUser)
-    console.log(profileUser)
+    // console.log('follow')
+    // console.log(loggedInUser)
+    // console.log(profileUser)
     if (!loggedInUser.id || loggedInUser.id === profileUser.id || profileUser.followers.includes(loggedInUser.id)) return
     FollowUser({ userId: loggedInUser.id, followId: profileUser.id })
       .then((res) => {
-        console.log(res)
+        // console.log(res)
         setProfileUser(res)
       })
   }
 
   const unfollowUser = () => {
-    console.log('unfollow')
-    console.log(loggedInUser)
-    console.log(profileUser)
+    // console.log('unfollow')
+    // console.log(loggedInUser)
+    // console.log(profileUser)
     if (loggedInUser.id === profileUser.id || !profileUser.followers.includes(loggedInUser.id)) return
     UnfollowUser({ userId: loggedInUser.id, followId: profileUser.id })
       .then((res) => {
-        console.log(res)
+        // console.log(res)
         setProfileUser(res)
       })
   }
@@ -226,7 +178,7 @@ const ProfilePage = ({ params }: any) => {
             {!loading && storedSaves?.filter((s: any) => s.type == "venue")?.map((item: any, i: number) => {
               return (
                 <div className='flex mb-6 w-full' key={i}>
-                  <VenueIcon selectedVenue={{ image: item.profile_pic_url, name: item?.name }} />
+                  <VenueIcon selectedVenue={{ image: item.profile_pic_url, name: item?.venue_name }} />
                   <div className='flex-col ml-5 h-max my-auto w-full'>
                     <p className='font-bold text-base'>{item.name}</p>
                     <div className='flex justify-between'>
@@ -246,7 +198,7 @@ const ProfilePage = ({ params }: any) => {
             {!loading && storedSaves?.filter((s: any) => s.type == "menu_item")?.map((item: any, i: number) => {
               return (
                 <div className='flex mb-6 w-full' key={i} >
-                  <VenueIcon selectedVenue={{ image: item?.profile_pic_url, name: item?.name }} />
+                  <VenueIcon selectedVenue={{ image: item?.profile_pic_url, name: item?.venue_name }} />
                   <div className='flex-col ml-5 h-max my-auto w-full'>
                     <p className='font-bold text-base'>{item.name}</p>
                     <p className='text-xs'>{item.venue_name}</p>
