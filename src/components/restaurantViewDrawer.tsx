@@ -4,7 +4,7 @@ import { Inter, Epilogue } from "next/font/google";
 const font = Epilogue({ subsets: ["latin"] });
 import VenueInfo from './venueInfo';
 import VenueMenu from './venueMenu';
-import { GetMenu } from '@/app/actions';
+import { GetMenu, GetVenue } from '@/app/actions';
 import { Drawer, DrawerContent } from './ui/drawer';
 import { drawerStore } from '@/app/store/state';
 
@@ -15,8 +15,6 @@ type Props = {
 const RestaurantViewDrawer = (props: Props) => {
 
     const [venue, setVenue] = useState<any>(null)
-    const [menu, setMenu] = useState<any>(null)
-    const [menus, setMenus] = useState<any[]>([])
     const { setOpenRecommend, setOpenSaved, setOpenVenueFunc } = drawerStore();
 
     const [open, setOpen] = useState(false)
@@ -24,19 +22,10 @@ const RestaurantViewDrawer = (props: Props) => {
     const openVenue = (venue: any) => {
         setOpenRecommend(false)
         setOpenSaved(false)
-        setVenue(venue)
         setOpen(true)
-        setMenus([])
+        venue.id = venue.id || venue.venue_id
 
-        if (venue !== null && venue !== undefined) {
-            for (let i = 0; i < venue?.menu_ids?.length; i++) {
-                GetMenu(venue.id, venue.menu_ids[i])
-                    .then((res: any) => {
-                        console.log('res - menu', res)
-                        setMenus(prev => [...prev, res])
-                    })
-            }
-        }
+        setVenue(venue)
     }
 
     useEffect(() => {
@@ -56,7 +45,7 @@ const RestaurantViewDrawer = (props: Props) => {
 
                 {/* <Input placeholder="Search for a restaurant" prefix={<SearchOutlined />} /> */}
                 <div className='mt-2 pl-4'>
-                    <VenueMenu menus={menus} />
+                    <VenueMenu selectedVenue={venue} />
                 </div>
             </DrawerContent>
         </Drawer>

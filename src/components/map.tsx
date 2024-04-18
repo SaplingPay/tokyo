@@ -34,24 +34,26 @@ const Page = (props: Props) => {
             {
                 current === 'Saved' ?
                     storedSaves && storedSaves.map((venue: any, index: number) => {
-                        return (
-                            <Marker key={index} longitude={venue.location.latitude} latitude={venue.location.longitude} anchor="bottom" onClick={() => selectVenue(allVenues.find((v: any) => v.id === venue.venue_id))}>
-                                {
-                                    venue?.profile_pic_url ?
-                                        <img src={venue.profile_pic_url} alt={""} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: 'white 2px solid' }} />
-                                        :
-                                        <Avatar
-                                            style={{
-                                                backgroundColor: '#12411B',
-                                                color: '#F5FFBE',
-                                                width: "40px",
-                                                height: "40px",
-                                                border: 'white 2px solid'
-                                            }}>{venue.name.toUpperCase()[0]}
-                                        </Avatar>
-                                }
-                            </Marker>
-                        )
+                        if (venue.type === 'venue') {
+                            return (
+                                <Marker key={index} longitude={venue.location.latitude} latitude={venue.location.longitude} anchor="bottom" onClick={() => selectVenue(venue)}>
+                                    {
+                                        venue?.profile_pic_url ?
+                                            <img src={venue.profile_pic_url} alt={""} style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover', border: 'white 2px solid' }} />
+                                            :
+                                            <Avatar
+                                                style={{
+                                                    backgroundColor: '#12411B',
+                                                    color: '#F5FFBE',
+                                                    width: "40px",
+                                                    height: "40px",
+                                                    border: 'white 2px solid'
+                                                }}>{venue.name.toUpperCase()[0]}
+                                            </Avatar>
+                                    }
+                                </Marker>
+                            )
+                        }
                     })
 
                     :

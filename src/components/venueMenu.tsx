@@ -3,10 +3,11 @@ import React, { use, useEffect, useState } from 'react'
 import { savedStore, userStore } from '@/app/store/state';
 import { HeartOutlined, HeartTwoTone } from '@ant-design/icons';
 import { useUser } from '@clerk/nextjs';
-import { UpdateUser } from '@/app/actions';
+import { GetMenusByVenueID, UpdateUser } from '@/app/actions';
 
 type Props = {
-    menus: any[]
+    // menus: any[]
+    selectedVenue: any
 }
 
 function VenueMenu(props: Props) {
@@ -15,28 +16,38 @@ function VenueMenu(props: Props) {
     const { storedSaves, allVenues, storeSaves } = savedStore();
     const { user: clerkUser } = useUser();
     const { user, setUser } = userStore()
+    const [menus, setMenus] = useState<any[]>([])
 
     useEffect(() => {
-        console.log('VENUE MENU - storedSaves', storedSaves)
+        // console.log('VENUE MENU - storedSaves', storedSaves)
+        // console.log('selectedVenue', props.selectedVenue)
         setCategories({})
 
-        for (let i = 0; i < props.menus.length; i++) {
-            const menu = props.menus[i];
-            console.log('menu', menu)
-            console.log('venues', allVenues)
-            const c = menu?.items?.map((item: any) => item.categories[0])
-            const catSet = new Set(c)
-            const data = {
-                ...categories,
-                [menu.id]: Array.from(catSet)
-            }
-            setCategories(data)
-        }
+        GetMenusByVenueID(props.selectedVenue?.id)
+            .then((res) => {
+                // console.log('res', res)
+                for (let i = 0; i < res.length; i++) {
+                    const menu = res[i];
+                    // console.log('menu', menu)
+                    // console.log('venues', allVenues)
+                    const c = menu?.items?.map((item: any) => item.categories[0])
+                    const catSet = new Set(c)
+                    const data = {
+                        ...categories,
+                        [menu.id]: Array.from(catSet)
+                    }
+                    setCategories((prev: any) => ({ ...prev, ...data }))
+                }
+                setMenus(res)
+            })
+            .catch((err) => {
+                console.error(err)
+            })
 
         return () => {
 
         }
-    }, [props.menus])
+    }, [props.selectedVenue])
 
     const toggleSave = (item: any, venue_id: string, menu_id: string) => {
         item.venue_id = item.venue_id || venue_id;
@@ -53,7 +64,7 @@ function VenueMenu(props: Props) {
             profile_pic_url: allVenues.find((v: any) => v.id === venue_id).profile_pic_url,
             location: allVenues.find((v: any) => v.id === venue_id).location
         }
-        console.log('sI', sI)
+        // console.log('sI', sI)
 
         const vI = {
             type: 'venue',
@@ -62,7 +73,7 @@ function VenueMenu(props: Props) {
             profile_pic_url: allVenues.find((v: any) => v.id === venue_id).profile_pic_url,
             location: allVenues.find((v: any) => v.id === venue_id).location
         }
-        console.log('vI', vI)
+        // console.log('vI', vI)
 
         if (clerkUser) {
             if (storedSaves.find((s: any) => s.menu_item_id === item.id)) {
@@ -74,7 +85,7 @@ function VenueMenu(props: Props) {
                         saves: updatedSaves
                     }
                 }
-                console.log('data', data)
+                // console.log('data', data)
                 UpdateUser(data)
                     .then((res) => {
                         setUser(res)
@@ -113,8 +124,8 @@ function VenueMenu(props: Props) {
                         if (!storedSaves.find((s: any) => s.venue_id === venue_id)) {
                             storeS.push(vI)
                         }
-                        console.log('storeS', storeS)
-                        console.log('res', res)
+                        // console.log('storeS', storeS)
+                        // console.log('res', res)
                         storeSaves(storeS)
                     })
                     .catch((err) => {
@@ -139,13 +150,15 @@ function VenueMenu(props: Props) {
         }
     };
 
-    return (
-        props.menus.length === 1 ? (
+    // console.log('menus', menus)
+
+    return (props.selectedVenue && menus.length > 0 ?
+        menus.length === 1 ? (
             <Tabs style={{ marginRight: '1em' }}>
-                {storedSaves?.filter((s: any) => s.type === "menu_item" && s.venue_id === props.menus[0].venue_id).length > 0 && (
+                {storedSaves?.filter((s: any) => s.type === "menu_item" && s.venue_id === menus[0].venue_id).length > 0 && (
                     <Tabs.TabPane key='0' tab='Saved'>
                         <div className='px-2 py-4 overflow-y-scroll h-80 mb-4'>
-                            {storedSaves?.filter((s: any) => (s.type === "menu_item" && s.venue_id === props.menus[0].venue_id)).map((item: any, i: number) => {
+                            {storedSaves?.filter((s: any) => (s.type === "menu_item" && s.venue_id === menus[0].venue_id)).map((item: any, i: number) => {
                                 return (
                                     <div className='flex mb-6' key={i}>
                                         <p className='text-base'>{item.name}</p>
@@ -166,12 +179,12 @@ function VenueMenu(props: Props) {
                     </Tabs.TabPane>
                 )
                 }
-                {categories[props.menus[0].id]?.map((cat: any, i: number) => {
+                {categories[menus[0].id]?.map((cat: any, i: number) => {
                     const id = String(i + 1);
                     return (
                         <Tabs.TabPane key={id} tab={cat} >
                             <div className='px-2 py-4 overflow-y-scroll h-80 mb-4'>
-                                {props.menus[0]?.items?.filter((item: any) => item.categories[0] === cat).map((item: any, i: number) => {
+                                {menus[0]?.items?.filter((item: any) => item.categories[0] === cat).map((item: any, i: number) => {
                                     return (
                                         <div className='flex mb-6' key={i}>
                                             <p className='text-base'>{item.name}</p>
@@ -181,7 +194,7 @@ function VenueMenu(props: Props) {
                                                         ${item.price.toFixed(2)}
                                                     </span>
                                                 )}
-                                                <button className='border-none bg-transparent' onClick={() => toggleSave(item, props.menus[0].venue_id, props.menus[0].id)}>
+                                                <button className='border-none bg-transparent' onClick={() => toggleSave(item, menus[0].venue_id, menus[0].id)}>
                                                     {storedSaves?.find((s: any) => s.menu_item_id === item.id) ? <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} /> : <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} />}
                                                 </button>
                                             </div>
@@ -199,7 +212,7 @@ function VenueMenu(props: Props) {
             :
             <Tabs defaultActiveKey='0' type="card" tabBarStyle={{ margin: '0' }} style={{ marginRight: "1em" }}>
                 {
-                    props.menus.map((menu, index) => {
+                    menus?.map((menu, index) => {
                         return (
                             <Tabs.TabPane key={index} tab={menu.name} >
                                 <Tabs>
@@ -227,12 +240,13 @@ function VenueMenu(props: Props) {
                                             </div>
                                         </Tabs.TabPane>
                                     )}
-                                    {categories[menu.id]?.map((cat: any, i: number) => {
+                                    {categories[menu.id] && categories[menu.id].map((cat: any, i: number) => {
                                         const id = String(i + 1);
+                                        // console.log('cat', cat)
                                         return (
                                             <Tabs.TabPane key={id} tab={cat}>
                                                 <div className='px-2 py-4 overflow-y-scroll h-80 mb-4'>
-                                                    {menu?.items?.filter((item: any) => item.categories[0] === cat).map((item: any, i: number) => {
+                                                    {menu.items.filter((item: any) => item.categories[0] === cat).map((item: any, i: number) => {
                                                         return (
                                                             <div className='flex mb-6' key={i}>
                                                                 <p className='text-base'>{item.name}</p>
@@ -259,7 +273,7 @@ function VenueMenu(props: Props) {
                     })
                 }
             </Tabs>
-    )
+        : "")
 }
 
 export default VenueMenu

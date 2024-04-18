@@ -101,22 +101,27 @@ const VenueInfo = (props: Props) => {
                     }}>{props.selectedVenue?.name.toUpperCase()[0]}
                 </Avatar>
             }
-            <div className='flex-col ml-5 h-max my-auto mx-full'>
-                <div className='flex flex-row'>
-                    <p className='font-bold text-lg'>{props.selectedVenue?.name}</p>
-                    <button className='border-none bg-transparent mb-2 mr-4'>
-                        {storedSaves.find((s: any) => s.venue_id === props.selectedVenue.id && s.type == "venue") ?
-                            <Popconfirm title="This will also remove all saved items from this place" onConfirm={toggleSave} okText="Ok" cancelText="Cancel">
-                                <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} />
-                            </Popconfirm>
-                            :
-                            <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} onClick={toggleSave} />
-                        }
-                    </button>
+            {props.selectedVenue &&
+
+                <div className='flex-col ml-5 h-max my-auto mx-full'>
+                    <div className='flex flex-row'>
+                        <p className='font-bold text-lg'>{props.selectedVenue?.name}</p>
+                        <button className='border-none bg-transparent mb-2 mr-4'>
+                            {storedSaves.find((s: any) => s.venue_id === props.selectedVenue.id && s.type == "venue") ?
+                                <Popconfirm title="This will also remove all saved items from this place" onConfirm={toggleSave} okText="Ok" cancelText="Cancel">
+                                    <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} />
+                                </Popconfirm>
+                                :
+                                <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} onClick={toggleSave} />
+                            }
+                        </button>
+                    </div>
+
+                    <p className='font-bold text-sm'>{props.selectedVenue?.location.address}</p>
                 </div>
 
-                <p className='font-bold text-sm'>{props.selectedVenue?.location.address}</p>
-            </div>
+            }
+
         </div>
     )
 }
