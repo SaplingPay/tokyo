@@ -3,7 +3,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { useUser } from '@clerk/nextjs';
 import { Form, Input, Upload } from 'antd';
 import Head from 'next/head';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { CreateUser, UpdateUser } from '../actions';
 import { computeSHA256 } from '@/lib/utils';
 import { getSignedURLForProfilePic } from '@/utils/aws/requests';
@@ -15,6 +15,8 @@ const RegisterPage = () => {
     const [form] = Form.useForm();
     const { push } = useRouter();
     const { storedSaves } = savedStore();
+
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         savedStore.persist.rehydrate()
@@ -46,6 +48,11 @@ const RegisterPage = () => {
     }
 
     const handleCreateAccount = (value: any) => {
+        if (loading) {
+            return;
+        }
+
+        setLoading(true);
         const values = form.getFieldsValue();
 
         const savedV = storedSaves.filter((s: any) => s.type === 'venue').map((venue: any) => {
@@ -192,14 +199,27 @@ const RegisterPage = () => {
                             <Input type='country' style={{ padding: "1em 1.5em", borderRadius: "5em", fontSize: "1.125rem" }} placeholder='Country (Netherlands)' />
                         </Form.Item> */}
                         <Form.Item>
-                            <button
-                                className="w-full px-6 py-4 bg-[#12411B] text-white text-base font-semibold rounded-full"
-                                type="submit"
-                            >
-                                Create Account
-                            </button>
+
+                            {
+                                loading ?
+                                    <button
+                                        className="w-full px-6 py-4 bg-slate-500 text-white text-base font-semibold rounded-full"
+                                        disabled
+                                    >
+                                        Creating Account...
+                                    </button> :
+                                    <button
+                                        className="w-full px-6 py-4 bg-[#12411B] text-white text-base font-semibold rounded-full"
+                                        type="submit"
+                                    >
+                                        Create Account
+                                    </button>
+                            }
+
                         </Form.Item>
                     </Form>
+
+
                 </div>
             </div>
         </>

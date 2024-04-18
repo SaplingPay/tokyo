@@ -47,13 +47,13 @@ export const getSignedURLForProfilePic = async ({
   checksum,
   userId,
 }: GetSignedURLParams): Promise<SignedURLResponse> => {
-  if (!allowedFileTypes.includes(fileType)) {
-    return { failure: "File type not allowed" };
-  }
+  // if (!allowedFileTypes.includes(fileType)) {
+  //   return { failure: "File type not allowed" };
+  // }
 
-  if (fileSize > maxFileSize) {
-    return { failure: "File size too large" };
-  }
+  // if (fileSize > maxFileSize) {
+  //   return { failure: "File size too large" };
+  // }
 
   const fileName = generateFileName();
 
