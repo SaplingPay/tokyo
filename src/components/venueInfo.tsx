@@ -1,4 +1,4 @@
-import { Avatar, Popconfirm } from 'antd'
+import { Avatar, Button, Modal, Popconfirm } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { savedStore, userStore } from '@/app/store/state';
 import { HeartOutlined, HeartTwoTone } from '@ant-design/icons';
@@ -13,6 +13,15 @@ const VenueInfo = (props: Props) => {
     const { storedSaves, storeSaves } = savedStore();
     const { user: clerkUser } = useUser();
     const { user, setUser } = userStore()
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const handleViewOrder = () => {
+        setIsModalVisible(true); 
+    };
+
+    const handleCloseModal = () => {
+        setIsModalVisible(false); 
+    };
 
     const toggleSave = () => {
         const vI = {
@@ -80,50 +89,91 @@ const VenueInfo = (props: Props) => {
 
     return (
         <div className='flex'>
-            {props.selectedVenue?.profile_pic_url ?
-                <img src={props.selectedVenue.profile_pic_url} alt={""} style={{
-                    width: '60px',
-                    height: '60px',
-                    marginLeft: ".5em",
-                    borderRadius: '50%',
-                    objectFit: 'cover'
-                }} />
-                :
+        <div className='flex'>
+            {props.selectedVenue?.profile_pic_url ? (
+                <img
+                    src={props.selectedVenue.profile_pic_url}
+                    alt={''}
+                    style={{
+                        width: '60px',
+                        height: '60px',
+                        marginLeft: '.5em',
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                    }}
+                />
+            ) : (
                 <Avatar
                     style={{
                         backgroundColor: '#12411B',
                         color: '#F5FFBE',
-                        marginLeft: ".5em",
-                        minWidth: "60px",
-                        minHeight: "60px",
-                        maxWidth: "90px",
-                        maxHeight: "90px",
-                    }}>{props.selectedVenue?.name.toUpperCase()[0]}
+                        marginLeft: '.5em',
+                        minWidth: '60px',
+                        minHeight: '60px',
+                        maxWidth: '90px',
+                        maxHeight: '90px',
+                    }}
+                >
+                    {props.selectedVenue?.name.toUpperCase()[0]}
                 </Avatar>
-            }
-            {props.selectedVenue &&
-
+            )}
+            {props.selectedVenue && (
                 <div className='flex-col ml-5 h-max my-auto mx-full'>
                     <div className='flex flex-row'>
                         <p className='font-bold text-lg'>{props.selectedVenue?.name}</p>
                         <button className='border-none bg-transparent mb-2 mr-4'>
-                            {storedSaves.find((s: any) => s.venue_id === props.selectedVenue.id && s.type == "venue") ?
-                                <Popconfirm title="This will also remove all saved items from this place" onConfirm={toggleSave} okText="Ok" cancelText="Cancel">
-                                    <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} />
+                            {storedSaves.find(
+                                (s: any) => s.venue_id === props.selectedVenue.id && s.type == 'venue'
+                            ) ? (
+                                <Popconfirm
+                                    title='This will also remove all saved items from this place'
+                                    onConfirm={toggleSave}
+                                    okText='Ok'
+                                    cancelText='Cancel'
+                                >
+                                    <HeartTwoTone twoToneColor='red' style={{ fontSize: '1.5em', marginLeft: '.5em' }} />
                                 </Popconfirm>
-                                :
-                                <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} onClick={toggleSave} />
-                            }
+                            ) : (
+                                <HeartOutlined
+                                    style={{ fontSize: '1.5em', color: 'lightgray', marginLeft: '.5em' }}
+                                    onClick={toggleSave}
+                                />
+                            )}
                         </button>
                     </div>
-
                     <p className='font-bold text-sm'>{props.selectedVenue?.location.address}</p>
+
+                    <Modal
+                    title='Order'
+                    visible={isModalVisible}
+                    onCancel={handleCloseModal}
+                    footer={null} // No footer for simplicity
+                >
+                </Modal>
+                
                 </div>
-
-            }
-
+            )}
         </div>
-    )
-}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '1em', marginLeft: 'auto' }}>
+            <Button
+                type='default'
+                onClick={handleViewOrder}
+                style={{
+                    borderRadius: '20px',
+                    border: '1px solid #12411B',
+                    backgroundColor: '#12411B',
+                    color: '#F5FFBE',
+                    height: '40px',
+                    width: '120px',
+                    fontSize: '1rem',
+                    fontWeight: 'bold',
+                }}
+            >
+                View Order
+            </Button>
+         </div>
+        </div>
+    );
+};
 
-export default VenueInfo
+export default VenueInfo;
