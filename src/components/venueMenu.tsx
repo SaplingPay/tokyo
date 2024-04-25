@@ -4,6 +4,7 @@ import { savedStore, userStore } from '@/app/store/state';
 import { HeartOutlined, HeartTwoTone } from '@ant-design/icons';
 import { useUser } from '@clerk/nextjs';
 import { GetMenusByVenueID, UpdateUser } from '@/app/actions';
+import MenuItem from './menuItem';
 
 type Props = {
     // menus: any[]
@@ -17,6 +18,40 @@ function VenueMenu(props: Props) {
     const { user: clerkUser } = useUser();
     const { user, setUser } = userStore()
     const [menus, setMenus] = useState<any[]>([])
+    type ItemQuantitiesType = {
+        [menuId: string]: {
+          [itemId: string]: number;
+        };
+      };
+    const [itemQuantities, setItemQuantities] = useState<ItemQuantitiesType>({});
+
+    // Add a new item to the order
+    const handleAddItem = (item, menuId) => {
+        setItemQuantities(prevQuantities => {
+            const newQuantities = { ...prevQuantities };
+            const currentQuantity = newQuantities[menuId]?.[item.id] || 0;
+            const updatedQuantity = currentQuantity + 1;
+            newQuantities[menuId] = {
+                ...(newQuantities[menuId] || {}),
+                [item.id]: updatedQuantity,
+            };
+            return newQuantities;
+        });
+    };
+
+    // Remove an item from the order
+    const handleRemoveItem = (item, menuId) => {
+        setItemQuantities(prevQuantities => {
+            const newQuantities = { ...prevQuantities };
+            const currentQuantity = newQuantities[menuId]?.[item.id] || 0;
+            if (currentQuantity > 0) {
+                const updatedQuantity = currentQuantity - 1;
+                newQuantities[menuId][item.id] = updatedQuantity;
+            }
+            return newQuantities;
+        });
+    };
+
 
     useEffect(() => {
         // console.log('VENUE MENU - storedSaves', storedSaves)
@@ -184,21 +219,20 @@ function VenueMenu(props: Props) {
                     return (
                         <Tabs.TabPane key={id} tab={cat} >
                             <div className='px-2 py-4 overflow-y-scroll h-80 mb-4'>
-                                {menus[0]?.items?.filter((item: any) => item.categories[0] === cat).map((item: any, i: number) => {
+                            {menus[0]?.items?.filter((item: any) => item.categories[0] === cat).map((item: any, itemIndex: number) => {
+                                const quantity = itemQuantities[menus[0].id]?.[item.id] || 0;
                                     return (
-                                        <div className='flex mb-6' key={i}>
-                                            <p className='text-base'>{item.name}</p>
-                                            <div className='ml-auto flex items-left h-max'>
-                                                {item.price > 0 && (
-                                                    <span className='p-1.5 border-solid border-[#12411B] bg-[#12411B] text-[#F5FFBE] border-2 h-max rounded-full ml-2'>
-                                                        ${item.price.toFixed(2)}
-                                                    </span>
-                                                )}
-                                                <button className='border-none bg-transparent' onClick={() => toggleSave(item, menus[0].venue_id, menus[0].id)}>
-                                                    {storedSaves?.find((s: any) => s.menu_item_id === item.id) ? <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} /> : <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} />}
-                                                </button>
-                                            </div>
-                                        </div>
+                                        <MenuItem
+                                        key={itemIndex}
+                                        item={item}
+                                        menuId={menus[0].id}
+                                        venueId={menus[0].venue_id}
+                                        quantity={quantity}
+                                        handleAddItem={handleAddItem}
+                                        handleRemoveItem={handleRemoveItem}
+                                        toggleSave={toggleSave}
+                                        storedSaves={storedSaves}
+                                    />
                                     )
                                 })}
                             </div>
@@ -240,33 +274,33 @@ function VenueMenu(props: Props) {
                                             </div>
                                         </Tabs.TabPane>
                                     )}
-                                    {categories[menu.id] && categories[menu.id].map((cat: any, i: number) => {
-                                        const id = String(i + 1);
-                                        // console.log('cat', cat)
-                                        return (
-                                            <Tabs.TabPane key={id} tab={cat}>
-                                                <div className='px-2 py-4 overflow-y-scroll h-80 mb-4'>
-                                                    {menu.items.filter((item: any) => item.categories[0] === cat).map((item: any, i: number) => {
-                                                        return (
-                                                            <div className='flex mb-6' key={i}>
-                                                                <p className='text-base'>{item.name}</p>
-                                                                <div className='ml-auto flex items-left h-max'>
-                                                                    {item.price > 0 && (
-                                                                        <span className='p-1.5 border-solid border-[#12411B] bg-[#12411B] text-[#F5FFBE] border-2 h-max rounded-full ml-2'>
-                                                                            ${item.price.toFixed(2)}
-                                                                        </span>
-                                                                    )}
-                                                                    <button className='border-none bg-transparent' onClick={() => toggleSave(item, menu.venue_id, menu.id)}>
-                                                                        {storedSaves?.find((s: any) => s.menu_item_id === item.id) ? <HeartTwoTone twoToneColor="red" style={{ fontSize: "1.5em", marginLeft: ".5em", }} /> : <HeartOutlined style={{ fontSize: "1.5em", color: "lightgray", marginLeft: ".5em", }} />}
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        )
-                                                    })}
-                                                </div>
-                                            </Tabs.TabPane>
-                                        );
-                                    })}
+                                   {categories[menu.id] && categories[menu.id].map((cat: any, catIndex: number) => {
+                            const id = String(catIndex + 1);
+                            return (
+                                <Tabs.TabPane key={id} tab={cat}>
+                                    <div className='px-2 py-4 overflow-y-scroll h-80 mb-4'>
+                                        {menu.items.filter((item: any) => item.categories[0] === cat).map((item: any, itemIndex: number) => {
+                                            // Retrieve the quantity for the current item
+                                            const quantity = itemQuantities[menu.id]?.[item.id] || 0;
+                                            return (
+                                                <MenuItem
+                                                    key={itemIndex}
+                                                    item={item}
+                                                    menuId={menu.id}
+                                                    venueId={menu.venue_id}
+                                                    quantity={quantity}
+                                                    handleAddItem={handleAddItem}
+                                                    handleRemoveItem={handleRemoveItem}
+                                                    toggleSave={toggleSave}
+                                                    storedSaves={storedSaves}
+                                                />
+                                            );
+                                        })}
+                </div>
+            </Tabs.TabPane>
+        );
+    })}
+
                                 </Tabs>
                             </Tabs.TabPane>
                         )
