@@ -11,12 +11,6 @@ type Props = {
     selectedVenue: any
 }
 
-type ItemQuantitiesType = {
-    [menuId: string]: {
-        [itemId: string]: number;
-    };
-};
-
 function VenueMenu(props: Props) {
 
     const { user: clerkUser } = useUser();
@@ -28,8 +22,6 @@ function VenueMenu(props: Props) {
     const [menus, setMenus] = useState<any[]>([])
 
     useEffect(() => {
-        // console.log('VENUE MENU - storedSaves', storedSaves)
-        // console.log('selectedVenue', props.selectedVenue)
         setCategories({})
 
         GetMenusByVenueID(props.selectedVenue?.id)

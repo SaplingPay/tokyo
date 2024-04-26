@@ -432,3 +432,28 @@ export async function GetUserSaves(userId: string) {
     return { error: errorMessage };
   }
 }
+
+export async function CreateOrder(data: any) {
+  console.log("CreateOrder");
+  try {
+    console.log("serverUrl", serverUrl);
+    const token = await (
+      await axios.post(serverUrl + "/getToken", {})
+    ).data.token;
+
+    const response = await axios.post(serverUrl + "/orders", data, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}

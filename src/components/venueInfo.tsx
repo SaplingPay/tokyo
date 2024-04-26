@@ -166,7 +166,7 @@ const VenueInfo = (props: Props) => {
                             </div>
 
                         </Modal> */}
-                        <OrderModal openModal={isModalVisible} setOpenModal={setIsModalVisible} />
+                        <OrderModal openModal={isModalVisible} setOpenModal={setIsModalVisible} venue_id={props.selectedVenue.id} />
 
                     </div>
                 )}

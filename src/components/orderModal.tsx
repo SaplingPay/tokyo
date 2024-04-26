@@ -1,16 +1,43 @@
+import { CreateOrder } from '@/app/actions'
 import { orderStore } from '@/app/store/state'
 import { MinusOutlined, PlusOutlined, ShoppingCartOutlined } from '@ant-design/icons'
 import { Badge, Button, List, Modal } from 'antd'
-import Link from 'next/link'
 import React, { useEffect } from 'react'
 
 type Props = {
     openModal: boolean
     setOpenModal: (open: boolean) => void
+    venue_id: string
 }
 
 const OrderModal = (props: Props) => {
-    const { order, increaseQty, decreaseQty } = orderStore()
+    const { order, setOrder, increaseQty, decreaseQty } = orderStore()
+
+    const handleCheckout = () => {
+        const data = {
+            venue_id: props.venue_id,
+            items: order.map((item) => {
+                return {
+                    menu_item_id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.qty
+                }
+            }, []),
+            total: order.reduce((acc, item) => acc + (item.price * item.qty), 0)
+
+        }
+        CreateOrder(data)
+            .then((res) => {
+                console.log('res', res)
+                props.setOpenModal(false)
+            })
+            .catch((err) => {
+                console.error(err)
+            })
+
+
+    }
 
     return (
         <Modal
@@ -47,7 +74,7 @@ const OrderModal = (props: Props) => {
                 {/* <p className="font-bold mt-2 mb-2">Total: ${order.reduce((acc, item) => acc + (item.price * item.qty), 0)}</p> */}
 
                 <Badge count={order.reduce((a, b) => a + b.qty, 0)}>
-                    <Button type="primary" shape="round" icon={<ShoppingCartOutlined />} size="large">
+                    <Button type="primary" shape="round" icon={<ShoppingCartOutlined />} size="large" onClick={handleCheckout}>
                         Checkout - €{order.reduce((acc, item) => acc + (item.price * item.qty), 0)}
                     </Button>
                 </Badge>
