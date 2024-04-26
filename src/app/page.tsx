@@ -11,7 +11,7 @@ import RestaurantViewDrawer from "@/components/restaurantViewDrawer";
 import { GetUser, GetUserSaves, GetVenues } from "./actions";
 import { useUser } from "@clerk/nextjs";
 import RecommendedDrawer from "@/components/recommendedDrawer";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 
 export default function Home() {
@@ -20,7 +20,13 @@ export default function Home() {
   const { user, setUser } = userStore()
   const { storedSaves, storeSaves, storeVenues } = savedStore()
 
+  const searchParams = useSearchParams()
+  const searchedVenue = searchParams.get('venue')
+
+
   useEffect(() => {
+    console.log('search', searchedVenue)
+
     GetVenues().then((res: any) => {
       // console.log('res', res)
       storeVenues(res)
