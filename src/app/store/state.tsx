@@ -9,8 +9,17 @@ export const navStore = create((set: any) => ({
     })),
 }));
 
+export enum Drawer {
+    ForYou = 'For You',
+    Saved = 'Saved',
+    Venue = 'Venue',
+}
+
 export const drawerStore = create((set: any) => ({
-    openRecommend: true,
+    // opened : Drawer.ForYou,
+    // openForYou: () => set({ opened: Drawer.ForYou }),
+    // openSaved: () => set({ opened: Drawer.Saved }),
+    // openVenue: () => set({ opened: Drawer.Venue }),
     setOpenRecommend: (open: boolean) => set((state: any) => ({
         openRecommend: open
     })),
@@ -72,3 +81,54 @@ export const savedStore = create(
 );
 
 // export default userStore;
+
+export const orderStore = create((set: any) => ({
+    order: [] as {
+        id: string,
+        name: string,
+        price: number,
+        qty: number
+    }[],
+    total: 0,
+    setOrder: (order: any) => set(() => ({
+        order: order
+    })),
+    addToOrder: (order: any) => set((state: any) => ({
+        order: [...state.order, order]
+    })),
+    removeFromOrder: (order: any) => set((state: any) => ({
+        order: state.order.filter((o: any) => o.id !== order.id)
+    })),
+    incrementTotal: (price: number) => set((state: any) => ({
+        total: state.total + price
+    })),
+    decrementTotal: (price: number) => set((state: any) => ({
+        total: state.total - price
+    })),
+    increaseQty: (id: string) => set((state: any) => ({
+        order: state.order.map((o: any) => {
+            if (o.id === id) {
+                return {
+                    ...o,
+                    qty: o.qty + 1
+                }
+            }
+            return o
+        })
+    })),
+    decreaseQty: (id: string) => set((state: any) => ({
+        order: state.order.map((o: any) => {
+            if (o.id === id) {
+                const newQty = o.qty - 1;
+                if (newQty === 0) {
+                    return null;
+                }
+                return {
+                    ...o,
+                    qty: newQty
+                }
+            }
+            return o
+        }).filter((o: any) => o !== null)
+    })),
+}));

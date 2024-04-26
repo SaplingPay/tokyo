@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react';
 import { Card, Button, List, Avatar, Badge, Modal } from 'antd';
 import {
