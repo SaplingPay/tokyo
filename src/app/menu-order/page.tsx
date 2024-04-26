@@ -55,8 +55,8 @@ const MenuOrder: React.FC = () => {
         dataSource={menuItems}
         renderItem={item => (
           <List.Item actions={[
-            <Button onClick={() => removeFromOrder(item)} icon={<MinusOutlined />} />,
-            <Button onClick={() => addToOrder(item)} icon={<PlusOutlined />} />
+            <Button key={"1"} onClick={() => removeFromOrder(item)} icon={<MinusOutlined />} />,
+            <Button key={"2"} onClick={() => addToOrder(item)} icon={<PlusOutlined />} />
           ]}>
             <List.Item.Meta
               avatar={<Avatar shape="square" size="large" icon={<UserOutlined />} />}

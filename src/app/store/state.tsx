@@ -20,6 +20,7 @@ export const drawerStore = create((set: any) => ({
     // openForYou: () => set({ opened: Drawer.ForYou }),
     // openSaved: () => set({ opened: Drawer.Saved }),
     // openVenue: () => set({ opened: Drawer.Venue }),
+    openRecommend: true,
     setOpenRecommend: (open: boolean) => set((state: any) => ({
         openRecommend: open
     })),

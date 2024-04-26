@@ -31,8 +31,8 @@ const OrderModal = (props: Props) => {
                     style={{ marginBottom: "1.5em" }}
                     renderItem={item => (
                         <List.Item actions={[
-                            <Button onClick={() => decreaseQty(item.id)} icon={<MinusOutlined />} />,
-                            <Button onClick={() => increaseQty(item.id)} icon={<PlusOutlined />} />
+                            <Button key={"1"} onClick={() => decreaseQty(item.id)} icon={<MinusOutlined />} />,
+                            <Button key={"2"} onClick={() => increaseQty(item.id)} icon={<PlusOutlined />} />
                         ]}>
                             <List.Item.Meta
                                 style={{ textAlign: 'left' }}
