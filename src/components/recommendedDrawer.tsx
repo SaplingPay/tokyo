@@ -13,7 +13,6 @@ const RecommendedDrawer = () => {
     const { openRecommend, setOpenRecommend, openVenueFunc } = drawerStore();
 
     const { allVenues } = savedStore();
-    console.log(allVenues)
     return (
         <Drawer
             open={openRecommend}
