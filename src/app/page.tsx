@@ -21,12 +21,11 @@ export default function Home() {
   const { storedSaves, storeSaves, storeVenues } = savedStore()
 
   const searchParams = useSearchParams()
-  const searchedVenue = searchParams.get('venue')
+  // const searchedVenue = searchParams.get('venue')
+  // const searchedCompletedOrderID = searchParams.get('completed_order_id')
 
 
   useEffect(() => {
-    console.log('search', searchedVenue)
-
     GetVenues().then((res: any) => {
       // console.log('res', res)
       storeVenues(res)
@@ -34,6 +33,13 @@ export default function Home() {
 
     return () => { }
   }, [])
+
+  // useEffect(() => {
+  //   if (searchedCompletedOrderID) {
+  //     console.log('searchedCompletedOrderID', searchedCompletedOrderID)
+  //   }
+  //   return () => { }
+  // }, [searchedCompletedOrderID])
 
 
   useEffect(() => {

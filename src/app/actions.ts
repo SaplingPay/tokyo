@@ -457,3 +457,57 @@ export async function CreateOrder(data: any) {
     return { error: errorMessage };
   }
 }
+
+export async function CheckoutOrder(orderId: string) {
+  console.log("CheckoutOrder");
+  try {
+    console.log("serverUrl", serverUrl);
+    const token = await (
+      await axios.post(serverUrl + "/getToken", {})
+    ).data.token;
+
+    const response = await axios.post(
+      serverUrl + `/payments/checkout/${orderId}`,
+      {},
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      }
+    );
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}
+
+export async function GetOrder(orderId: string) {
+  console.log("GetOrder");
+  try {
+    console.log("serverUrl", serverUrl);
+    const token = await (
+      await axios.post(serverUrl + "/getToken", {})
+    ).data.token;
+
+    const response = await axios.get(serverUrl + `/orders/${orderId}`, {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+
+    // Return the response from the external endpoint
+    return response.data;
+  } catch (err: any) {
+    console.error("Proxy request failed:", err.response?.data || err.message);
+    console.log(err.response?.status);
+    const errorMessage =
+      err.response?.data?.error || err.message || "Proxy request failed";
+    return { error: errorMessage };
+  }
+}

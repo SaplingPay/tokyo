@@ -26,7 +26,7 @@ function VenueMenu(props: Props) {
 
         GetMenusByVenueID(props.selectedVenue?.id)
             .then((res) => {
-                // console.log('res', res)
+                console.log('res', res)
                 for (let i = 0; i < res.length; i++) {
                     const menu = res[i];
                     // console.log('menu', menu)

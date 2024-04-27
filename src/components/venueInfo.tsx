@@ -148,24 +148,6 @@ const VenueInfo = (props: Props) => {
                         </div>
                         <p className='font-bold text-sm'>{props.selectedVenue?.location.address}</p>
 
-                        {/* <Modal
-                            title='Order'
-                            open={isModalVisible}
-                            onCancel={handleCloseModal}
-                            footer={null}
-                        >
-                            <div>
-                                {order.map((o) => (
-                                    <div key={o.id} className='flex justify-between'>
-                                        <p>{o.name}</p>
-                                        <p>{o.qty}</p>
-                                        <p>€{(o.price * o.qty).toFixed(2)}</p>
-                                    </div>
-                                ))}
-                                <p>Total: €{order.reduce((a, b) => a + b.price * b.qty, 0).toFixed(2)}</p>
-                            </div>
-
-                        </Modal> */}
                         <OrderModal openModal={isModalVisible} setOpenModal={setIsModalVisible} venue_id={props.selectedVenue.id} />
 
                     </div>
