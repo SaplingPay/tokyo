@@ -1,8 +1,9 @@
-import { CreateOrder } from '@/app/actions'
+import { CheckoutOrder, CreateOrder } from '@/app/actions'
 import { orderStore } from '@/app/store/state'
 import { MinusOutlined, PlusOutlined, ShoppingCartOutlined } from '@ant-design/icons'
 import { Badge, Button, List, Modal } from 'antd'
 import React, { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 type Props = {
     openModal: boolean
@@ -12,6 +13,7 @@ type Props = {
 
 const OrderModal = (props: Props) => {
     const { order, setOrder, increaseQty, decreaseQty } = orderStore()
+    const { push } = useRouter()
 
     const handleCheckout = () => {
         const data = {
@@ -30,7 +32,18 @@ const OrderModal = (props: Props) => {
         CreateOrder(data)
             .then((res) => {
                 console.log('res', res)
-                props.setOpenModal(false)
+                CheckoutOrder(res.id)
+                    .then((res) => {
+                        console.log('res', res)
+                        if (res.url) {
+                            push(res.url)
+                        }
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                    })
+
+                // props.setOpenModal(false)
             })
             .catch((err) => {
                 console.error(err)
