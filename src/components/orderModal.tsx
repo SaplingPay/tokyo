@@ -2,7 +2,7 @@ import { CheckoutOrder, CreateOrder } from '@/app/actions'
 import { orderStore } from '@/app/store/state'
 import { MinusOutlined, PlusOutlined, ShoppingCartOutlined } from '@ant-design/icons'
 import { Badge, Button, List, Modal } from 'antd'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 type Props = {
@@ -15,7 +15,11 @@ const OrderModal = (props: Props) => {
     const { order, setOrder, increaseQty, decreaseQty } = orderStore()
     const { push } = useRouter()
 
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
     const handleCheckout = () => {
+        setIsButtonDisabled(true); // Disable the button when pressed
+
         const data = {
             venue_id: props.venue_id,
             items: order.map((item) => {
@@ -42,14 +46,11 @@ const OrderModal = (props: Props) => {
                     .catch((err) => {
                         console.error(err)
                     })
-
                 // props.setOpenModal(false)
             })
             .catch((err) => {
                 console.error(err)
             })
-
-
     }
 
     return (
@@ -87,7 +88,7 @@ const OrderModal = (props: Props) => {
                 {/* <p className="font-bold mt-2 mb-2">Total: ${order.reduce((acc, item) => acc + (item.price * item.qty), 0)}</p> */}
 
                 <Badge count={order.reduce((a, b) => a + b.qty, 0)}>
-                    <Button type="primary" shape="round" icon={<ShoppingCartOutlined />} size="large" onClick={handleCheckout}>
+                    <Button type="primary" shape="round" icon={<ShoppingCartOutlined />} size="large" onClick={handleCheckout} disabled={isButtonDisabled}>
                         Checkout - €{order.reduce((acc, item) => acc + (item.price * item.qty), 0)}
                     </Button>
                 </Badge>
