@@ -27,7 +27,7 @@ const ProfileIcon = (props: Props) => {
   return (
     <>
       <div className="absolute top-6 right-5 z-50" onClick={goToProfile}>
-        {user?.profile_pic_url ? <Avatar src={user?.profile_pic_url} size={'large'} /> : <Avatar icon={<UserOutlined />} size={'large'} />}
+        {user?.profile_pic_url ? <Avatar src={user?.profile_pic_url} size={"large"} /> : <Avatar icon={<UserOutlined />} size={"large"} />}
       </div>
       <SignInModal openModal={openSignInModal} setOpenModal={setOpenSignInModal} />
     </>
