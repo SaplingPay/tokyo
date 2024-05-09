@@ -38,13 +38,13 @@ const RestaurantViewDrawer = (props: Props) => {
             modal={false}
             onOpenChange={setOpen}
         >
-            <DrawerContent className={`h-[70%]`}>
+            <DrawerContent className={`h-[85%]`}>
                 <div className='mb-2 pt-4 px-2'>
                     <VenueInfo selectedVenue={venue} />
                 </div>
 
                 {/* <Input placeholder="Search for a restaurant" prefix={<SearchOutlined />} /> */}
-                <div className='mt-2 pl-4'>
+                <div className='mt-2 pl-4 mb-10'>
                     <VenueMenu selectedVenue={venue} />
                 </div>
             </DrawerContent>

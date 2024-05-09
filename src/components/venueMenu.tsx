@@ -5,6 +5,7 @@ import { HeartOutlined, HeartTwoTone } from '@ant-design/icons';
 import { useUser } from '@clerk/nextjs';
 import { GetMenusByVenueID, UpdateUser } from '@/app/actions';
 import MenuItem from './menuItem';
+import posthog from 'posthog-js';
 
 type Props = {
     // menus: any[]
@@ -89,6 +90,14 @@ function VenueMenu(props: Props) {
                 // console.log('data', data)
                 UpdateUser(data)
                     .then((res) => {
+                        posthog.capture('UnsavedMenuItem', {
+                            venue_id: venue_id,
+                            venue_name: allVenues.find((v: any) => v.id === venue_id).name,
+                            menu_id: menu_id,
+                            menu_item_id: item.id,
+                            menu_item_name: item.name,
+                            user_id: user.id
+                        })
                         setUser(res)
                         const storeS = storedSaves.filter((s: any) => s.menu_item_id !== item.id)
                         storeSaves(storeS)
@@ -120,6 +129,14 @@ function VenueMenu(props: Props) {
 
                 UpdateUser(data)
                     .then((res) => {
+                        posthog.capture('SavedMenuItem', {
+                            venue_id: venue_id,
+                            venue_name: allVenues.find((v: any) => v.id === venue_id).name,
+                            menu_id: menu_id,
+                            menu_item_id: item.id,
+                            menu_item_name: item.name,
+                            user_id: user.id
+                        })
                         setUser(res)
                         const storeS = [...storedSaves, sI]
                         if (!storedSaves.find((s: any) => s.venue_id === venue_id)) {
@@ -140,12 +157,26 @@ function VenueMenu(props: Props) {
             if (storedSaves.find((s: any) => s.menu_item_id === item.id)) {
                 const storeS = storedSaves.filter((s: any) => s.menu_item_id !== item.id)
                 storeSaves(storeS)
+                posthog.capture('UnsavedMenuItem-Anon', {
+                    venue_id: venue_id,
+                    venue_name: allVenues.find((v: any) => v.id === venue_id).name,
+                    menu_id: menu_id,
+                    menu_item_id: item.id,
+                    menu_item_name: item.name
+                })
             } else {
                 const storeS = [...storedSaves, sI]
                 if (!storedSaves.find((s: any) => s.venue_id === venue_id)) {
                     storeS.push(vI)
                 }
                 storeSaves(storeS)
+                posthog.capture('SavedMenuItem-Anon', {
+                    venue_id: venue_id,
+                    venue_name: allVenues.find((v: any) => v.id === venue_id).name,
+                    menu_id: menu_id,
+                    menu_item_id: item.id,
+                    menu_item_name: item.name
+                })
             }
 
         }
