@@ -12,6 +12,7 @@ import { GetUser, GetUserSaves, GetVenues } from "./actions";
 import { useUser } from "@clerk/nextjs";
 import RecommendedDrawer from "@/components/recommendedDrawer";
 import { useRouter, useSearchParams } from "next/navigation";
+import posthog from "posthog-js";
 
 
 export default function Home() {
@@ -26,24 +27,12 @@ export default function Home() {
 
 
   useEffect(() => {
-    GetVenues().then((res: any) => {
-      // console.log('res', res)
-      storeVenues(res)
-    })
+    GetVenues()
+      .then((res: any) => {
+        storeVenues(res)
+      })
 
     return () => { }
-  }, [])
-
-  // useEffect(() => {
-  //   if (searchedCompletedOrderID) {
-  //     console.log('searchedCompletedOrderID', searchedCompletedOrderID)
-  //   }
-  //   return () => { }
-  // }, [searchedCompletedOrderID])
-
-
-  useEffect(() => {
-    // savedStore.persist.rehydrate()
   }, [])
 
   useEffect(() => {

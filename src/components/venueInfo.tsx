@@ -5,6 +5,7 @@ import { HeartOutlined, HeartTwoTone } from '@ant-design/icons';
 import { useUser } from '@clerk/nextjs';
 import { UpdateUser } from '@/app/actions';
 import OrderModal from './orderModal';
+import posthog from 'posthog-js';
 
 type Props = {
     selectedVenue: any
@@ -47,6 +48,11 @@ const VenueInfo = (props: Props) => {
                 }
                 UpdateUser(data)
                     .then((res) => {
+                        posthog.capture('UnsavedVenue', {
+                            venue_id: props.selectedVenue.id,
+                            venue_name: props.selectedVenue.name,
+                            user_id: user.id
+                        })
                         // console.log('res', res)
                         setUser(res)
                         const storeS = storedSaves.filter((s: any) => s.venue_id !== props.selectedVenue.id && s.type == "venue")
@@ -70,6 +76,11 @@ const VenueInfo = (props: Props) => {
                 }
                 UpdateUser(data)
                     .then((res) => {
+                        posthog.capture('SavedVenue', {
+                            venue_id: props.selectedVenue.id,
+                            venue_name: props.selectedVenue.name,
+                            user_id: user.id
+                        })
                         // console.log('res', res)
                         setUser(res)
                         const storeS = [...storedSaves, vI]
@@ -91,6 +102,14 @@ const VenueInfo = (props: Props) => {
             }
         }
     };
+
+    useEffect(() => {
+        posthog.capture('SelectedVenue', {
+            venue_id: props.selectedVenue.id,
+            venue_name: props.selectedVenue.name,
+            user_id: user.id
+        })
+    }, [props.selectedVenue])
 
     return (
         <div className='flex'>

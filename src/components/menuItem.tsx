@@ -31,9 +31,8 @@ const MenuItem = (props: MenuItemProps) => {
     }
 
     return (
-        <div className='flex mb-6' style={{ minHeight: '32px', maxHeight: '32px' }}>
+        <div className='flex mb-6' style={{ minHeight: '32px', maxHeight: '56px' }}>
             <p className='text-base'>{props.item.name}</p>
-
             <div className='ml-auto flex items-center'>
                 {props.orderingSupported ? getQty(props.item.id) === 0 ? (
                     <>

@@ -4,6 +4,8 @@ import "./globals.css";
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 import { ConfigProvider } from "antd";
 import { ClerkProvider } from "@clerk/nextjs";
+import { PHProvider } from './providers'
+import dynamic from 'next/dynamic'
 
 const font = Epilogue({ subsets: ["latin"] });
 
@@ -51,6 +53,9 @@ export const viewport: Viewport = {
   themeColor: "#12411B",
 };
 
+const PostHogPageView = dynamic(() => import('./PostHogPageView'), {
+  ssr: false,
+})
 
 export default function RootLayout({
   children,
@@ -60,20 +65,23 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={font.className}>
-          <AntdRegistry>
-            <ConfigProvider
-              theme={{
-                token: {
-                  colorPrimary: '#12411B',
-                  borderRadius: 10,
-                },
-              }}
-            >
-              {children}
-            </ConfigProvider>
-          </AntdRegistry>
-        </body>
+        <PHProvider>
+          <body className={font.className}>
+            <AntdRegistry>
+              <ConfigProvider
+                theme={{
+                  token: {
+                    colorPrimary: '#12411B',
+                    borderRadius: 10,
+                  },
+                }}
+              >
+                <PostHogPageView />
+                {children}
+              </ConfigProvider>
+            </AntdRegistry>
+          </body>
+        </PHProvider>
       </html>
     </ClerkProvider>
   );
