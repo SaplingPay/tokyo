@@ -165,7 +165,13 @@ const VenueInfo = (props: Props) => {
                                 )}
                             </button>
                         </div>
-                        <p className='font-bold text-sm'>{props.selectedVenue?.location.address}</p>
+                        <p className='font-bold text-sm'>
+                        {props.selectedVenue?.location.address ? (
+                            <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(props.selectedVenue.location.address)}`} target="_blank" rel="noopener noreferrer">
+                            {props.selectedVenue.location.address}
+                            </a>
+                        ) : null}
+                        </p>
 
                         <OrderModal openModal={isModalVisible} setOpenModal={setIsModalVisible} venue_id={props.selectedVenue.id} />
 
