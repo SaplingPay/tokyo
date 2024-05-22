@@ -26,7 +26,7 @@ const RecommendedDrawer = () => {
 
                 <div className='mt-4 mx-4 overflow-y-scroll h-100'>
                     {/* Hardcoded the first venue for Kings Day */}
-                    {allVenues?.filter((v: any) => v.id === KINGSDAY_VENUE_ID).map((item: any, i: number) => {
+                    {/* {allVenues?.filter((v: any) => v.id === KINGSDAY_VENUE_ID).map((item: any, i: number) => {
                         return (
                             <div className='flex mb-4' key={i} onClick={() => openVenueFunc(item)}>
                                 <VenueIcon selectedVenue={{ image: item.profile_pic_url, name: item?.name }} />
@@ -36,7 +36,7 @@ const RecommendedDrawer = () => {
                                 </div>
                             </div>
                         )
-                    })}
+                    })} */}
 
                     {allVenues?.filter((v: any) => v.id !== KINGSDAY_VENUE_ID).map((item: any, i: number) => {
                         return (
